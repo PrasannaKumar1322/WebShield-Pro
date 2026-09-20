@@ -1,0 +1,6265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>WebShield Pro - Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        /* ================================
+           NAVBAR
+        ================================= */
+
+        .navbar {
+            background: #111827;
+            color: white;
+            padding: 18px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .logout {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .logout:hover {
+            background: #dc2626;
+        }
+
+        /* ================================
+           MAIN CONTAINER
+        ================================= */
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h1 {
+            font-size: 28px;
+            margin-bottom: 7px;
+        }
+
+        .welcome p {
+            color: #6b7280;
+        }
+
+        /* ================================
+           SUMMARY CARDS
+        ================================= */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h3 {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .card .number {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .critical {
+            color: #dc2626;
+        }
+
+        .high {
+            color: #ea580c;
+        }
+
+        .medium {
+            color: #ca8a04;
+        }
+
+        .checks {
+            color: #2563eb;
+        }
+
+        .open-findings {
+            color: #7c3aed;
+        }
+
+        /* ================================
+           SECTION
+        ================================= */
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .section h2 {
+            margin-bottom: 20px;
+        }
+
+        /* ================================
+           SECURITY RISK SCORE
+        ================================= */
+
+        .risk-score-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .risk-score-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            flex-wrap: wrap;
+        }
+
+        .risk-score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border: 10px solid #e5e7eb;
+            background: #f9fafb;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .risk-score-circle::before {
+            content: "";
+            position: absolute;
+            inset: -10px;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--risk-color, #16a34a) var(--risk-angle, 0deg),
+                #e5e7eb var(--risk-angle, 0deg)
+            );
+            z-index: 0;
+        }
+
+        .risk-score-circle::after {
+            content: "";
+            position: absolute;
+            inset: 10px;
+            border-radius: 50%;
+            background: #f9fafb;
+            z-index: 1;
+        }
+
+        .risk-score-number,
+        .risk-score-max {
+            position: relative;
+            z-index: 2;
+        }
+
+        .risk-score-number {
+            font-size: 38px;
+            font-weight: bold;
+            color: #111827;
+            line-height: 1;
+        }
+
+        .risk-score-max {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        .risk-details {
+            flex: 1;
+            min-width: 240px;
+        }
+
+        .risk-details h3 {
+            margin-bottom: 8px;
+            font-size: 20px;
+        }
+
+        .risk-level {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .risk-description {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .risk-breakdown {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .risk-breakdown span {
+            background: #f3f4f6;
+            padding: 7px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #374151;
+        }
+
+        .risk-meter {
+            margin-top: 20px;
+        }
+
+        .risk-meter-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 7px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .risk-meter-track {
+            width: 100%;
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .risk-meter-bar {
+            width: 100%;
+            height: 100%;
+            border-radius: 999px;
+            background: #16a34a;
+            transition: width .55s ease, background .3s ease;
+        }
+
+        .risk-priority {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: #f8fafc;
+        }
+
+        .risk-priority-title {
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 7px;
+        }
+
+        .risk-priority-text {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.55;
+        }
+
+        .risk-status-line {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .risk-status-pill {
+            padding: 6px 9px;
+            border-radius: 999px;
+            background: #eef2f7;
+            color: #475569;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .risk-excellent {
+            border-color: #16a34a;
+        }
+
+        .risk-good {
+            border-color: #22c55e;
+        }
+
+        .risk-medium {
+            border-color: #eab308;
+        }
+
+        .risk-high {
+            border-color: #f97316;
+        }
+
+        .risk-critical {
+            border-color: #dc2626;
+        }
+
+        .level-excellent {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .level-good {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .level-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .level-high {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+
+        .level-critical {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* ================================
+           SCAN DETAILS MODAL
+        ================================= */
+
+        .scan-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(17, 24, 39, 0.65);
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .scan-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scan-modal-content {
+            width: 100%;
+            max-width: 900px;
+            max-height: 88vh;
+            overflow-y: auto;
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+            animation: scanModalIn 0.2s ease-out;
+        }
+
+        @keyframes scanModalIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .scan-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 2;
+        }
+
+        .scan-modal-header h2 {
+            margin: 0 0 5px 0;
+        }
+
+        .scan-modal-header p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .scan-modal-close {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 8px;
+            background: #f3f4f6;
+            color: #374151;
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .scan-modal-close:hover {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        #scanDetailsBody {
+            padding: 18px 20px 22px;
+        }
+
+        .finding-view-btn {
+            background: #111827;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .finding-view-btn:hover {
+            background: #1f2937;
+            transform: translateY(-1px);
+        }
+
+        .scan-detail-card.highlighted {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+            background: #f8fbff;
+        }
+
+        .scan-detail-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            background: #ffffff;
+        }
+
+        .scan-detail-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .scan-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 14px;
+        }
+
+        .scan-detail-full {
+            grid-column: 1 / -1;
+        }
+
+        .scan-detail-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 5px;
+        }
+
+        .scan-detail-type {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .scan-detail-label {
+            display: block;
+            font-size: 10px;
+            font-weight: bold;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-top: 0;
+            margin-bottom: 3px;
+        }
+
+        .scan-detail-value {
+            color: #374151;
+            font-size: 13px;
+            line-height: 1.45;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .scan-detail-url {
+            color: #2563eb;
+            word-break: break-all;
+        }
+
+        .scan-remediation {
+            background: #eff6ff;
+            border-left: 3px solid #2563eb;
+            padding: 9px 10px;
+            border-radius: 6px;
+            margin-top: 5px;
+        }
+
+        .scan-evidence {
+            background: #f9fafb;
+            border-left: 3px solid #6b7280;
+            padding: 9px 10px;
+            border-radius: 6px;
+            margin-top: 5px;
+            font-family: Consolas, monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .scan-verification {
+            margin-top: 8px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            color: #475569;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .scan-verification strong {
+            color: #1f2937;
+        }
+
+        .scan-evidence-label {
+            display: inline-block;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 3px;
+        }
+
+        .scan-recommendation {
+            background: #f0fdf4;
+            border-left: 3px solid #16a34a;
+            padding: 9px 10px;
+            border-radius: 6px;
+            margin-top: 5px;
+            color: #166534;
+            line-height: 1.5;
+        }
+
+        .scan-modal-summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .scan-modal-summary-item {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 9px 6px;
+            text-align: center;
+        }
+
+        .scan-modal-summary-item strong {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 3px;
+        }
+
+        .scan-modal-summary-item span {
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        .scan-loading,
+        .scan-no-results,
+        .scan-detail-error {
+            text-align: center;
+            padding: 35px 15px;
+            color: #6b7280;
+        }
+
+        .scan-detail-error {
+            color: #991b1b;
+            background: #fee2e2;
+            border-radius: 8px;
+        }
+
+        /* ================================
+           OWASP SECURITY SUMMARY
+        ================================= */
+
+        .owasp-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 5px;
+        }
+
+        .owasp-summary-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 15px;
+            background: #fafafa;
+        }
+
+        .owasp-summary-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .owasp-summary-name {
+            color: #374151;
+            font-size: 13px;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
+        .owasp-summary-count {
+            color: #5b21b6;
+            background: #ede9fe;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .owasp-progress {
+            width: 100%;
+            height: 7px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .owasp-progress-bar {
+            height: 100%;
+            background: #7c3aed;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .owasp-summary-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 8px;
+            color: #6b7280;
+            font-size: 11px;
+        }
+
+        .owasp-summary-empty {
+            text-align: center;
+            color: #6b7280;
+            padding: 25px 15px;
+            background: #f9fafb;
+            border-radius: 9px;
+            border: 1px dashed #d1d5db;
+        }
+
+        /* ================================
+           SEVERITY DISTRIBUTION
+        ================================= */
+
+        .severity-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 5px;
+        }
+
+        .severity-row {
+            display: grid;
+            grid-template-columns: 120px 1fr 45px;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .severity-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #374151;
+        }
+
+        .severity-track {
+            width: 100%;
+            height: 12px;
+            background: #e5e7eb;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .severity-bar {
+            height: 100%;
+            min-width: 0;
+            border-radius: 20px;
+            transition: width 0.35s ease;
+        }
+
+        .severity-bar-critical {
+            background: #dc2626;
+        }
+
+        .severity-bar-high {
+            background: #ea580c;
+        }
+
+        .severity-bar-medium {
+            background: #eab308;
+        }
+
+        .severity-bar-low {
+            background: #16a34a;
+        }
+
+        .severity-bar-info {
+            background: #2563eb;
+        }
+
+        .severity-value {
+            text-align: right;
+            font-size: 13px;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .severity-chart-total {
+            margin-top: 8px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        /* ================================
+           SCAN BOX
+        ================================= */
+
+        .scan-box {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .scan-box input {
+            flex: 1;
+            min-width: 250px;
+            padding: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .scan-box input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .scan-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 13px 22px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+            min-width: 130px;
+        }
+
+        .scan-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .scan-btn:disabled {
+            background: #93c5fd;
+            cursor: not-allowed;
+        }
+
+        /* ================================
+           MESSAGE
+        ================================= */
+
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 7px;
+            display: none;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .scan-info {
+            margin-top: 15px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .url-help {
+            margin-top: 10px;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        /* ================================
+           TABLE
+        ================================= */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+        }
+
+        /* ================================
+           FINDINGS SEARCH & FILTER
+        ================================= */
+
+        .findings-filter {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .findings-search {
+            flex: 1;
+            min-width: 220px;
+            padding: 11px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .findings-search:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .findings-filter-select {
+            padding: 11px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            background: white;
+            font-size: 14px;
+            cursor: pointer;
+            min-width: 160px;
+            outline: none;
+        }
+
+        .findings-filter-select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .findings-no-match {
+            text-align: center;
+            color: #6b7280;
+            padding: 25px;
+            font-size: 14px;
+        }
+
+        /* ================================
+           SEVERITY BADGES
+        ================================= */
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .badge-critical {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-high {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+
+        .badge-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-low {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* ================================
+           OWASP CATEGORY BADGE
+        ================================= */
+
+        .owasp-badge {
+            background: #ede9fe;
+            color: #5b21b6;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        /* ================================
+           STATUS BADGES
+        ================================= */
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .status-passed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-open {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* ================================
+           PDF BUTTON
+        ================================= */
+
+        .download-btn {
+            background: #16a34a;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 7px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .download-btn:hover {
+            background: #15803d;
+        }
+
+        .download-btn:disabled {
+            background: #86efac;
+            cursor: not-allowed;
+        }
+
+        /* ================================
+           EMPTY ROW
+        ================================= */
+
+        .empty-row {
+            text-align: center;
+            color: #6b7280;
+            padding: 25px;
+        }
+
+        /* ================================
+           SCAN HISTORY
+        ================================= */
+
+        .history-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .refresh-btn {
+            background: #111827;
+            color: white;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .refresh-btn:hover {
+            background: #1f2937;
+        }
+
+        .view-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .view-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .history-completed {
+            background: #dcfce7;
+            color: #166534;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .history-running {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .history-failed {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .history-risk {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .history-risk-excellent {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .history-risk-good {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .history-risk-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .history-risk-high {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+
+        .history-risk-critical {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .history-risk-unknown {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .history-empty {
+            text-align: center;
+            color: #6b7280;
+            padding: 25px;
+        }
+
+        /* ================================
+           RESPONSIVE
+        ================================= */
+
+        @media (max-width: 900px) {
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .scan-modal-summary {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .owasp-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .scan-modal {
+                padding: 10px;
+            }
+
+            .scan-modal-content {
+                max-height: 95vh;
+            }
+
+            #scanDetailsBody {
+                padding: 15px;
+            }
+
+            .scan-modal-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .scan-detail-top {
+                flex-direction: column;
+            }
+
+            .scan-detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .scan-detail-full {
+                grid-column: auto;
+            }
+
+            .owasp-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .severity-row {
+                grid-template-columns: 95px 1fr 35px;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                padding: 15px 18px;
+            }
+
+            .container {
+                margin-top: 20px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome h1 {
+                font-size: 23px;
+            }
+
+            .scan-box {
+                flex-direction: column;
+            }
+
+            .scan-box input,
+            .scan-btn {
+                width: 100%;
+            }
+
+            .section {
+                padding: 18px;
+            }
+
+            .risk-score-section {
+                padding: 18px;
+            }
+
+            .risk-score-wrapper {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .risk-score-circle {
+                width: 130px;
+                height: 130px;
+            }
+
+            .risk-score-number {
+                font-size: 32px;
+            }
+
+        }
+
+    
+        .scan-progress { display:none; margin-top:16px; padding:16px; border:1px solid #e5e7eb; border-radius:10px; background:#f8fafc; }
+        .scan-progress.active { display:block; }
+        .scan-progress-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:10px; }
+        .scan-progress-title { font-weight:700; color:#1f2937; }
+        .scan-progress-percent { font-weight:800; color:#2563eb; }
+        .scan-progress-track { width:100%; height:8px; background:#e5e7eb; border-radius:999px; overflow:hidden; }
+        .scan-progress-bar { width:0%; height:100%; background:#2563eb; border-radius:999px; transition:width .45s ease; }
+        .scan-progress-status { margin-top:9px; font-size:13px; color:#64748b; }
+        .scan-progress-steps { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:14px; }
+        .scan-step { padding:8px 9px; border-radius:7px; background:#eef2f7; color:#64748b; font-size:12px; text-align:center; font-weight:600; }
+        .scan-step.active { background:#dbeafe; color:#1d4ed8; }
+        .scan-step.done { background:#dcfce7; color:#15803d; }
+        @media (max-width:700px) { .scan-progress-steps { grid-template-columns:repeat(2,1fr); } }
+
+    
+        /* Security Trend */
+        .security-trend-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 16px;
+        }
+        .trend-stat {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 14px;
+        }
+        .trend-stat-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .trend-stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+        .trend-stat-sub {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+        .trend-chart {
+            margin-top: 18px;
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            min-height: 170px;
+            padding: 16px 10px 8px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: #ffffff;
+            overflow-x: auto;
+        }
+        .trend-column {
+            min-width: 54px;
+            height: 145px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 5px;
+        }
+        .trend-bar {
+            width: 30px;
+            min-height: 4px;
+            border-radius: 7px 7px 3px 3px;
+            background: #2563eb;
+            position: relative;
+        }
+        .trend-score {
+            font-size: 11px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .trend-date {
+            font-size: 10px;
+            color: #64748b;
+            white-space: nowrap;
+        }
+        .trend-empty {
+            width: 100%;
+            text-align: center;
+            color: #64748b;
+            padding: 25px 10px;
+        }
+        @media (max-width: 800px) {
+            .security-trend-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .history-filter-bar {
+            display: grid;
+            grid-template-columns: minmax(220px, 1.7fr) minmax(150px, .8fr) minmax(145px, .7fr) minmax(145px, .7fr) auto auto;
+            gap: 10px;
+            align-items: center;
+            margin: 0 0 16px;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+
+        .history-filter-input,
+        .history-filter-select,
+        .history-filter-date {
+            width: 100%;
+            min-height: 40px;
+            padding: 9px 11px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            background: #fff;
+            color: #1f2937;
+            font: inherit;
+            box-sizing: border-box;
+        }
+
+        .history-filter-input:focus,
+        .history-filter-select:focus,
+        .history-filter-date:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, .10);
+        }
+
+        .history-clear-btn {
+            min-height: 40px;
+            padding: 9px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            background: #fff;
+            color: #374151;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .history-clear-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .history-filter-count {
+            color: #6b7280;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            text-align: right;
+        }
+
+        @media (max-width: 900px) {
+            .history-filter-bar {
+                grid-template-columns: 1fr 1fr;
+            }
+            .history-filter-count {
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .history-filter-bar {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    
+        .findings-export-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 10px 0 14px;
+            flex-wrap: wrap;
+        }
+
+        .export-btn {
+            border: 0;
+            border-radius: 7px;
+            padding: 9px 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .export-csv {
+            background: #16a34a;
+            color: #fff;
+        }
+
+        .export-json {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .export-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .export-info {
+            color: #6b7280;
+            font-size: 12px;
+            margin-left: 4px;
+        }
+
+        @media (max-width: 640px) {
+            .export-btn {
+                flex: 1 1 140px;
+            }
+
+            .export-info {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+
+
+
+/* =========================================================
+   RISK SCORE + SEVERITY DISTRIBUTION LAYOUT
+========================================================= */
+.risk-severity-row{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(360px,.85fr);gap:16px;margin-bottom:25px;align-items:stretch;}
+.risk-severity-row .risk-score-section,.risk-severity-row .section{margin-bottom:0;height:100%;min-width:0;}
+.risk-severity-row .severity-chart{margin-top:10px;}
+@media (max-width:950px){.risk-severity-row{grid-template-columns:1fr;}}
+
+/* =========================================================
+   WEBSHIELD PRO — ENTERPRISE SECURITY THEME
+   Visual styling only — functionality/JavaScript unchanged.
+========================================================= */
+:root{
+    --ws-bg:#080d18;
+    --ws-bg2:#0b1220;
+    --ws-card:#111a2b;
+    --ws-card2:#0d1728;
+    --ws-border:#263449;
+    --ws-blue:#2563eb;
+    --ws-blue2:#1d4ed8;
+    --ws-cyan:#0891b2;
+    --ws-teal:#14b8a6;
+    --ws-text:#f8fafc;
+    --ws-muted:#94a3b8;
+}
+html{background:var(--ws-bg);}
+body{
+    background:
+      radial-gradient(circle at 8% 0%,rgba(37,99,235,.12),transparent 28%),
+      radial-gradient(circle at 92% 8%,rgba(8,145,178,.09),transparent 25%),
+      var(--ws-bg);
+    color:var(--ws-text);
+}
+.navbar{
+    background:rgba(8,13,24,.97)!important;
+    border-bottom:1px solid var(--ws-border);
+    box-shadow:0 8px 30px rgba(0,0,0,.25);
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+.logout{background:#b91c1c!important;border:1px solid rgba(248,113,113,.25)!important;}
+.logout:hover{background:#dc2626!important;}
+.container{max-width:1240px;}
+.welcome h1,.section h2,.risk-score-section h2{color:var(--ws-text);}
+.welcome p,.section p,.risk-description,.scan-info,.url-help{color:var(--ws-muted)!important;}
+
+.card,.section,.risk-score-section{
+    background:linear-gradient(145deg,rgba(17,26,43,.98),rgba(11,18,32,.98))!important;
+    border:1px solid var(--ws-border)!important;
+    box-shadow:0 12px 32px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+.card{position:relative;overflow:hidden;transition:.2s ease;}
+.card::before{
+    content:"";position:absolute;left:0;top:0;width:3px;height:100%;
+    background:linear-gradient(180deg,var(--ws-blue),var(--ws-cyan));
+}
+.card:hover{transform:translateY(-2px);border-color:#344762!important;box-shadow:0 16px 36px rgba(0,0,0,.28)!important;}
+.card h3{color:var(--ws-muted)!important;}
+.checks{color:#60a5fa!important}.open-findings{color:#a78bfa!important}
+.critical{color:#f87171!important}.high{color:#fb923c!important}.medium{color:#facc15!important}
+
+.risk-score-circle{
+    border-color:#334155!important;
+    background:radial-gradient(circle at 35% 30%,rgba(37,99,235,.12),transparent 42%),#0b1220!important;
+}
+.risk-score-number{color:#0f172a!important;position:relative!important;z-index:10!important;display:block!important}.risk-score-max{color:#64748b!important;position:relative!important;z-index:10!important;display:block!important}
+.risk-details h3{color:var(--ws-text)!important}
+.risk-breakdown span{background:#162238!important;border:1px solid var(--ws-border);color:#cbd5e1!important}
+.level-excellent,.level-good{background:rgba(34,197,94,.13)!important;color:#86efac!important;border:1px solid rgba(34,197,94,.22)}
+.level-medium{background:rgba(234,179,8,.13)!important;color:#fde047!important;border:1px solid rgba(234,179,8,.22)}
+.level-high{background:rgba(249,115,22,.13)!important;color:#fdba74!important;border:1px solid rgba(249,115,22,.22)}
+.level-critical{background:rgba(239,68,68,.13)!important;color:#fca5a5!important;border:1px solid rgba(239,68,68,.22)}
+
+.owasp-summary-card,.trend-stat,.trend-chart{background:var(--ws-card2)!important;border-color:var(--ws-border)!important}
+.owasp-summary-name{color:#dbeafe!important}
+.owasp-summary-count{color:#67e8f9!important;background:rgba(8,145,178,.13)!important;border:1px solid rgba(8,145,178,.22)}
+.owasp-progress,.severity-track,.risk-meter-track{background:#1e293b!important}
+.owasp-progress-bar{background:linear-gradient(90deg,var(--ws-blue),var(--ws-cyan))!important}
+.owasp-summary-meta,.severity-label,.severity-chart-total{color:var(--ws-muted)!important}
+.owasp-summary-empty{color:var(--ws-muted)!important;background:var(--ws-card2)!important;border-color:#334155!important}
+.severity-value{color:#e2e8f0!important}
+.severity-bar-critical{background:#ef4444!important}.severity-bar-high{background:#f97316!important}
+.severity-bar-medium{background:#eab308!important}.severity-bar-low{background:#3b82f6!important}
+.severity-bar-info{background:#22c55e!important}
+
+.scan-box input,.findings-search,.findings-filter-select,
+.history-filter-input,.history-filter-select,.history-filter-date{
+    background:#0d1728!important;color:#f8fafc!important;border-color:#334155!important;
+}
+.scan-box input::placeholder,.findings-search::placeholder,.history-filter-input::placeholder{color:#64748b;}
+.scan-box input:focus,.findings-search:focus,.findings-filter-select:focus,
+.history-filter-input:focus,.history-filter-select:focus,.history-filter-date:focus{
+    border-color:var(--ws-blue)!important;box-shadow:0 0 0 3px rgba(37,99,235,.16)!important;outline:none;
+}
+.findings-filter-select option,.history-filter-select option{background:#0d1728;color:#f8fafc;}
+.scan-btn,.view-btn{background:var(--ws-blue)!important;box-shadow:0 5px 15px rgba(37,99,235,.18);}
+.scan-btn:hover,.view-btn:hover{background:var(--ws-blue2)!important}
+.scan-btn:disabled{background:#475569!important}
+.refresh-btn,.history-clear-btn{
+    background:#1e293b!important;border:1px solid #334155!important;color:#e2e8f0!important;
+}
+.refresh-btn:hover,.history-clear-btn:hover{background:#263449!important}
+
+table{color:#e2e8f0!important}
+th{background:#0d1728!important;color:#cbd5e1!important}
+th,td{border-bottom-color:#263449!important}
+tbody tr:hover{background:rgba(37,99,235,.045)!important}
+
+.badge-critical{background:rgba(239,68,68,.14)!important;color:#fca5a5!important;border:1px solid rgba(239,68,68,.2)}
+.badge-high{background:rgba(249,115,22,.14)!important;color:#fdba74!important;border:1px solid rgba(249,115,22,.2)}
+.badge-medium{background:rgba(234,179,8,.14)!important;color:#fde047!important;border:1px solid rgba(234,179,8,.2)}
+.badge-low{background:rgba(59,130,246,.14)!important;color:#93c5fd!important;border:1px solid rgba(59,130,246,.2)}
+.badge-info{background:rgba(34,197,94,.13)!important;color:#86efac!important;border:1px solid rgba(34,197,94,.2)}
+.owasp-badge{background:rgba(8,145,178,.13)!important;color:#67e8f9!important;border:1px solid rgba(8,145,178,.22)}
+.status-passed{background:rgba(34,197,94,.13)!important;color:#86efac!important;border:1px solid rgba(34,197,94,.2)}
+.status-open{background:rgba(239,68,68,.13)!important;color:#fca5a5!important;border:1px solid rgba(239,68,68,.2)}
+
+.download-btn{background:#059669!important;box-shadow:0 5px 15px rgba(5,150,105,.18)}
+.download-btn:hover{background:#047857!important}
+.history-completed{background:rgba(34,197,94,.13)!important;color:#86efac!important}
+.history-running{background:rgba(37,99,235,.13)!important;color:#93c5fd!important}
+.history-failed{background:rgba(239,68,68,.13)!important;color:#fca5a5!important}
+.history-risk-excellent,.history-risk-good{background:rgba(34,197,94,.13)!important;color:#86efac!important}
+.history-risk-medium{background:rgba(234,179,8,.13)!important;color:#fde047!important}
+.history-risk-high{background:rgba(249,115,22,.13)!important;color:#fdba74!important}
+.history-risk-critical{background:rgba(239,68,68,.13)!important;color:#fca5a5!important}
+.history-risk-unknown{background:#1e293b!important;color:#94a3b8!important}
+
+.scan-progress{background:#0d1728!important;border-color:var(--ws-border)!important}
+.scan-progress-title{color:#f8fafc!important}.scan-progress-percent{color:#60a5fa!important}
+.scan-progress-track{background:#1e293b!important}.scan-progress-bar{background:var(--ws-blue)!important}
+.scan-progress-status{color:var(--ws-muted)!important}
+.scan-step{background:#162238!important;color:#94a3b8!important}
+.scan-step.active{background:rgba(37,99,235,.16)!important;color:#93c5fd!important}
+.scan-step.done{background:rgba(34,197,94,.13)!important;color:#86efac!important}
+
+.trend-stat-label,.trend-stat-sub,.trend-date,.trend-empty{color:var(--ws-muted)!important}
+.trend-stat-value,.trend-score{color:#f8fafc!important}
+.trend-bar{background:linear-gradient(180deg,var(--ws-cyan),var(--ws-blue))!important}
+
+.scan-modal{background:rgba(2,6,23,.78)!important;backdrop-filter:blur(4px)}
+.scan-modal-content{background:#0b1220!important;border:1px solid var(--ws-border)!important;box-shadow:0 25px 70px rgba(0,0,0,.5)!important}
+.scan-modal-header{background:#0d1728!important;border-bottom-color:var(--ws-border)!important}
+.scan-modal-header h2{color:#f8fafc!important}.scan-modal-header p{color:#94a3b8!important}
+.scan-modal-close{background:#162238!important;color:#cbd5e1!important;border:1px solid var(--ws-border)!important}
+.scan-modal-close:hover{background:rgba(239,68,68,.14)!important;color:#fca5a5!important}
+.scan-detail-card{background:#0d1728!important;border-color:var(--ws-border)!important}
+.scan-detail-card.highlighted{border-color:var(--ws-blue)!important;background:#0f1c31!important}
+.scan-detail-title{color:#f8fafc!important}.scan-detail-type,.scan-detail-label{color:#94a3b8!important}
+.scan-detail-value{color:#cbd5e1!important}.scan-detail-url{color:#60a5fa!important}
+.scan-remediation{background:rgba(37,99,235,.08)!important;border-left-color:var(--ws-blue)!important}
+.scan-evidence{background:#080d18!important;border-left-color:#475569!important;color:#cbd5e1!important}
+.scan-verification{background:#111a2b!important;border-color:var(--ws-border)!important;color:#94a3b8!important}
+.scan-verification strong,.scan-evidence-label{color:#e2e8f0!important}
+.scan-recommendation{background:rgba(20,184,166,.09)!important;border-left-color:var(--ws-teal)!important;color:#99f6e4!important}
+.scan-modal-summary-item{background:#111a2b!important;border:1px solid var(--ws-border)!important}
+.scan-modal-summary-item strong{color:#f8fafc!important}.scan-modal-summary-item span{color:#94a3b8!important}
+.scan-loading,.scan-no-results{color:#94a3b8!important}
+.scan-detail-error{background:rgba(239,68,68,.12)!important;color:#fca5a5!important;border-color:rgba(239,68,68,.2)!important}
+
+.message.success{background:rgba(34,197,94,.12)!important;color:#86efac!important;border-color:rgba(34,197,94,.2)!important}
+.message.error{background:rgba(239,68,68,.12)!important;color:#fca5a5!important;border-color:rgba(239,68,68,.2)!important}
+.message.info{background:rgba(37,99,235,.12)!important;color:#93c5fd!important;border-color:rgba(37,99,235,.2)!important}
+.export-info{color:var(--ws-muted)!important}
+
+
+/* =========================================================
+   WEBSHIELD PRO — PREMIUM ANALYTICS + STATISTICS
+   UI/UX enhancement only — existing API routes preserved.
+========================================================= */
+.stat-card-icon{
+    width:42px;height:42px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,rgba(37,99,235,.18),rgba(8,145,178,.10));
+    border:1px solid rgba(96,165,250,.18);
+    font-size:20px;flex-shrink:0;
+}
+.card{min-height:126px;padding:20px 21px!important;}
+.card h3{letter-spacing:.01em;}
+.card .number{margin-top:8px;font-size:34px!important;letter-spacing:-.03em;}
+.card-stat-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.stat-card-meta{margin-top:8px;color:#64748b;font-size:11px;}
+.card::after{content:"";position:absolute;right:-28px;bottom:-38px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.10),transparent 68%);pointer-events:none;}
+.premium-section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:15px;margin-bottom:18px;}
+.premium-section-kicker{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#60a5fa;font-weight:800;margin-bottom:5px;}
+.premium-section-sub{color:#94a3b8;font-size:13px;line-height:1.5;}
+.analytics-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;}
+.analytics-panel{background:linear-gradient(145deg,#0d1728,#0a1220);border:1px solid #263449;border-radius:14px;padding:18px;min-width:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.025);}
+.analytics-panel-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;}
+.analytics-panel-title h3{color:#f8fafc;font-size:15px;}
+.analytics-panel-title span{color:#64748b;font-size:11px;}
+.analytics-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px;}
+.analytics-kpi{padding:13px;border-radius:11px;background:#0d1728;border:1px solid #263449;}
+.analytics-kpi-label{color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;}
+.analytics-kpi-value{color:#f8fafc;font-size:23px;font-weight:850;margin-top:6px;}
+.analytics-kpi-sub{color:#64748b;font-size:10px;margin-top:3px;}
+.analytics-trend-empty{height:100%;display:flex;align-items:center;justify-content:center;color:#64748b;font-size:13px;padding:20px;text-align:center;}
+.analytics-donut-wrap{display:flex;align-items:center;justify-content:center;gap:22px;min-height:250px;flex-wrap:wrap;}
+.analytics-donut{width:165px;height:165px;border-radius:50%;background:#1e293b;position:relative;box-shadow:0 0 0 10px rgba(255,255,255,.015);flex-shrink:0;}
+.analytics-donut::after{content:"";position:absolute;inset:32px;border-radius:50%;background:#0a1220;border:1px solid #263449;}
+.analytics-donut-center{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.analytics-donut-center strong{color:#f8fafc;font-size:25px;}
+.analytics-donut-center span{color:#64748b;font-size:10px;margin-top:2px;}
+.analytics-legend{display:grid;gap:9px;min-width:145px;}
+.analytics-legend-row{display:flex;align-items:center;justify-content:space-between;gap:14px;color:#cbd5e1;font-size:12px;}
+.analytics-legend-name{display:flex;align-items:center;gap:7px;}
+.analytics-dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+.analytics-legend-value{color:#f8fafc;font-weight:800;}
+.analytics-owasp{margin-top:0;}
+.analytics-owasp-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;}
+.analytics-owasp-item{background:#0d1728;border:1px solid #2b3b55;border-radius:12px;padding:16px;min-height:96px;}
+.analytics-owasp-name{color:#e2e8f0;font-size:13px;font-weight:800;line-height:1.4;min-height:38px;}
+.analytics-owasp-meta{display:flex;justify-content:space-between;gap:10px;margin:10px 0 8px;color:#94a3b8;font-size:11px;font-weight:600;}
+.analytics-owasp-track{height:8px;background:#1e293b;border-radius:999px;overflow:hidden;}
+.analytics-owasp-bar{height:100%;border-radius:999px;background:linear-gradient(90deg,#2563eb,#08a6bd);}
+.analytics-note{margin-top:14px;color:#8191a8;font-size:11px;line-height:1.6;}
+.analytics-owasp h3{font-size:16px!important;}
+.analytics-owasp .analytics-panel-title span{font-size:11px!important;}
+@media (max-width:950px){.analytics-grid{grid-template-columns:1fr;}.analytics-kpis{grid-template-columns:repeat(2,1fr);}.analytics-owasp-grid{grid-template-columns:1fr;}}
+@media (max-width:600px){.card{min-height:112px;}.analytics-kpis{grid-template-columns:1fr 1fr;}.analytics-panel{padding:14px;}.analytics-donut{width:145px;height:145px;}.analytics-donut::after{inset:28px;}}
+
+
+
+/* =========================================================
+   COMPACT CONTENT FIT — RISK / SEVERITY / OWASP
+========================================================= */
+.risk-severity-row .section{display:flex;flex-direction:column;min-height:100%;}
+.risk-severity-row #severityDistribution{flex:1;display:flex;align-items:center;width:100%;}
+.risk-severity-row #severityDistribution .severity-chart{width:100%;gap:16px;margin:0;}
+.risk-severity-row #severityDistribution .severity-row{grid-template-columns:92px minmax(0,1fr) 34px;gap:10px;min-height:27px;}
+.risk-severity-row #severityDistribution .severity-label{font-size:12px;}
+.risk-severity-row #severityDistribution .severity-track{height:11px;}
+.risk-severity-row #severityDistribution .severity-value{font-size:12px;}
+.risk-severity-row #severityDistribution .severity-chart-total{margin-top:6px;padding-top:10px;}
+.analytics-grid{align-items:stretch;}
+.analytics-grid .analytics-panel{height:100%;align-self:stretch;box-sizing:border-box;}
+.analytics-grid .analytics-owasp{min-height:0;display:flex;flex-direction:column;}
+.analytics-grid .analytics-owasp-grid{flex:0 0 auto;}
+.analytics-owasp-grid{align-items:stretch;}
+.analytics-owasp-item{min-height:0;padding:11px;}
+.analytics-owasp-name{min-height:30px;}
+.analytics-note{margin-top:10px;}
+@media (max-width:950px){
+    .analytics-grid .analytics-panel{width:100%;}
+}
+@media (max-width:600px){
+    .risk-severity-row #severityDistribution .severity-row{grid-template-columns:82px minmax(0,1fr) 30px;gap:8px;}
+    .risk-severity-row #severityDistribution .severity-chart{gap:12px;}
+}
+
+/* OWASP CONTENT SIZE ENHANCEMENT */
+.analytics-owasp-grid{gap:14px!important;}
+.analytics-owasp-item{padding:16px!important;min-height:96px!important;}
+.analytics-owasp-name{font-size:13px!important;line-height:1.4!important;min-height:38px!important;}
+.analytics-owasp-meta{font-size:11px!important;margin:10px 0 8px!important;}
+.analytics-owasp-track{height:8px!important;}
+.analytics-note{font-size:11px!important;line-height:1.6!important;margin-top:14px!important;}
+.analytics-owasp h3{font-size:16px!important;}
+</style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            🛡️ WebShield Pro
+        </div>
+
+        <button
+            class="logout"
+            onclick="logout()">
+            Logout
+        </button>
+
+    </nav>
+
+
+    <main class="container">
+
+        <div class="welcome">
+
+            <h1>
+                Security Dashboard
+            </h1>
+
+            <p>
+                Monitor targets, perform security scans and manage reports.
+            </p>
+
+        </div>
+
+
+        <div class="cards">
+
+            <div class="card">
+                <div class="card-stat-head">
+                    <div>
+                        <h3>Security Checks</h3>
+                        <div class="stat-card-meta">Total controls evaluated</div>
+                    </div>
+                    <div class="stat-card-icon">🛡️</div>
+                </div>
+
+                <div
+                    class="number checks"
+                    id="securityChecks">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+                <div class="card-stat-head">
+                    <div>
+                        <h3>Open Findings</h3>
+                        <div class="stat-card-meta">Issues requiring review</div>
+                    </div>
+                    <div class="stat-card-icon">⚠️</div>
+                </div>
+
+                <div
+                    class="number open-findings"
+                    id="totalFindings">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+                <div class="card-stat-head">
+                    <div>
+                        <h3>Critical</h3>
+                        <div class="stat-card-meta">Highest impact</div>
+                    </div>
+                    <div class="stat-card-icon">🔴</div>
+                </div>
+
+                <div
+                    class="number critical"
+                    id="criticalCount">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+                <div class="card-stat-head">
+                    <div>
+                        <h3>High</h3>
+                        <div class="stat-card-meta">High-priority issues</div>
+                    </div>
+                    <div class="stat-card-icon">🟠</div>
+                </div>
+
+                <div
+                    class="number high"
+                    id="highCount">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+                <div class="card-stat-head">
+                    <div>
+                        <h3>Medium</h3>
+                        <div class="stat-card-meta">Moderate exposure</div>
+                    </div>
+                    <div class="stat-card-icon">🟡</div>
+                </div>
+
+                <div
+                    class="number medium"
+                    id="mediumCount">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+                <div class="card-stat-head">
+                    <div>
+                        <h3>Low</h3>
+                        <div class="stat-card-meta">Hardening opportunities</div>
+                    </div>
+                    <div class="stat-card-icon">🔵</div>
+                </div>
+
+                <div
+                    class="number medium"
+                    id="lowCount">
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="risk-severity-row">
+
+        <div class="risk-score-section">
+
+            <h2 style="margin-bottom:20px;">
+                🛡️ Security Risk Score
+            </h2>
+
+            <div class="risk-score-wrapper">
+
+                <div
+                    class="risk-score-circle risk-excellent"
+                    id="riskScoreCircle">
+
+                    <div
+                        class="risk-score-number"
+                        id="riskScore">
+                        100
+                    </div>
+
+                    <div class="risk-score-max">
+                        / 100
+                    </div>
+
+                </div>
+
+
+                <div class="risk-details">
+
+                    <h3 id="riskLevel">
+                        EXCELLENT
+                    </h3>
+
+                    <span
+                        class="risk-level level-excellent"
+                        id="riskBadge">
+                        LOW RISK
+                    </span>
+
+                    <p
+                        class="risk-description"
+                        id="riskDescription">
+                        No security issues detected. Your current scan has a strong security posture.
+                    </p>
+
+                    <div class="risk-meter">
+
+                        <div class="risk-meter-head">
+                            <span>Overall Security Score</span>
+                            <strong id="riskMeterLabel">100 / 100</strong>
+                        </div>
+
+                        <div class="risk-meter-track">
+                            <div
+                                class="risk-meter-bar"
+                                id="riskMeterBar">
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="risk-breakdown">
+
+                        <span>
+                            Critical:
+                            <strong id="riskCritical">0</strong>
+                        </span>
+
+                        <span>
+                            High:
+                            <strong id="riskHigh">0</strong>
+                        </span>
+
+                        <span>
+                            Medium:
+                            <strong id="riskMedium">0</strong>
+                        </span>
+
+                        <span>
+                            Low:
+                            <strong id="riskLow">0</strong>
+                        </span>
+
+                    </div>
+
+                    <div class="risk-status-line">
+
+                        <span class="risk-status-pill">
+                            Checks: <strong id="riskTotalChecks">0</strong>
+                        </span>
+
+                        <span class="risk-status-pill">
+                            Open Findings: <strong id="riskOpenFindings">0</strong>
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="risk-priority">
+
+                <div class="risk-priority-title">
+                    🔧 What to Fix First
+                </div>
+
+                <div
+                    class="risk-priority-text"
+                    id="riskPriorityText">
+                    No open findings detected. Continue monitoring your security controls.
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <h2>
+                📊 Severity Distribution
+            </h2>
+
+            <p style="margin-top:-10px;margin-bottom:15px;color:#6b7280;font-size:13px;">
+                Severity distribution of the checks performed in the current scan.
+            </p>
+
+            <div id="severityDistribution">
+                <div class="owasp-summary-empty">
+                    Run a security scan to view the severity distribution.
+                </div>
+            </div>
+
+        </div>
+
+        </div>
+
+
+        <div class="section">
+
+            <h2>
+                🛡️ OWASP Security Summary
+            </h2>
+
+            <p style="margin-top:-10px;margin-bottom:15px;color:#6b7280;font-size:13px;">
+                OWASP Top 10-style categories mapped to the checks performed by this scan.
+            </p>
+
+            <div id="owaspSummary" class="owasp-summary">
+                <div class="owasp-summary-empty">
+                    Run a security scan to view the OWASP category summary.
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- PREMIUM SECURITY ANALYTICS -->
+        <div class="section premium-analytics-section">
+            <div class="premium-section-head">
+                <div>
+                    <div class="premium-section-kicker">Security Intelligence</div>
+                    <h2 style="margin-bottom:5px;">📊 Security Analytics</h2>
+                    <div class="premium-section-sub">
+                        Visual overview of the current scan posture, severity mix and OWASP coverage.
+                    </div>
+                </div>
+                <div class="premium-section-sub" id="analyticsLastUpdated">Waiting for scan data</div>
+            </div>
+
+            <div class="analytics-kpis">
+                <div class="analytics-kpi">
+                    <div class="analytics-kpi-label">Total Checks</div>
+                    <div class="analytics-kpi-value" id="analyticsTotalChecks">0</div>
+                    <div class="analytics-kpi-sub">Controls evaluated</div>
+                </div>
+                <div class="analytics-kpi">
+                    <div class="analytics-kpi-label">Open Findings</div>
+                    <div class="analytics-kpi-value" id="analyticsOpenFindings">0</div>
+                    <div class="analytics-kpi-sub">Issues requiring review</div>
+                </div>
+                <div class="analytics-kpi">
+                    <div class="analytics-kpi-label">Pass Rate</div>
+                    <div class="analytics-kpi-value" id="analyticsPassRate">0%</div>
+                    <div class="analytics-kpi-sub">Info / passed checks</div>
+                </div>
+                <div class="analytics-kpi">
+                    <div class="analytics-kpi-label">Risk Score</div>
+                    <div class="analytics-kpi-value" id="analyticsRiskScore">100/100</div>
+                    <div class="analytics-kpi-sub" id="analyticsRiskLevel">Awaiting scan</div>
+                </div>
+            </div>
+
+            <div class="analytics-grid">
+
+                <div class="analytics-panel">
+                    <div class="analytics-panel-title">
+                        <h3>🍩 Severity Mix</h3>
+                        <span>Current scan</span>
+                    </div>
+                    <div class="analytics-donut-wrap">
+                        <div id="analyticsSeverityDonut" class="analytics-donut">
+                            <div class="analytics-donut-center">
+                                <strong id="analyticsSeverityTotal">0</strong>
+                                <span>Total checks</span>
+                            </div>
+                        </div>
+                        <div id="analyticsSeverityLegend" class="analytics-legend">
+                            <div class="analytics-trend-empty">No scan data</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analytics-panel analytics-owasp">
+                    <div class="analytics-panel-title">
+                        <h3>🛡️ OWASP Coverage</h3>
+                        <span>Checks by assessment category</span>
+                    </div>
+                    <div id="analyticsOwaspGrid" class="analytics-owasp-grid">
+                        <div class="analytics-trend-empty">Run a security scan to view OWASP coverage.</div>
+                    </div>
+                    <div class="analytics-note">
+                        Categories are mapped to the passive security checks performed by WebShield Pro. This visualization represents the checks covered by this project, not complete OWASP Top 10 coverage.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="section">
+
+            <h2>
+                🔍 Start Security Scan
+            </h2>
+
+            <div class="scan-box">
+
+                <input
+                    type="url"
+                    id="websiteUrl"
+                    placeholder="Enter Website URL - https://example.com"
+                    autocomplete="off">
+
+                <button
+                    class="scan-btn"
+                    id="scanButton"
+                    onclick="startScan()">
+                    Start Scan
+                </button>
+
+            </div>
+
+
+            <div class="url-help">
+
+                Example:
+                <strong>https://example.com</strong>
+
+                &nbsp; | &nbsp;
+
+                Only scan websites you own or have permission to test.
+
+            </div>
+
+
+            <div
+                id="message"
+                class="message">
+            </div>
+
+
+            <div
+                class="scan-info"
+                id="scanInfo">
+                No scan selected.
+            </div>
+            <div id="scanProgress" class="scan-progress" aria-live="polite">
+                <div class="scan-progress-head">
+                    <span id="scanProgressTitle" class="scan-progress-title">Preparing security scan...</span>
+                    <span id="scanProgressPercent" class="scan-progress-percent">0%</span>
+                </div>
+                <div class="scan-progress-track"><div id="scanProgressBar" class="scan-progress-bar"></div></div>
+                <div id="scanProgressStatus" class="scan-progress-status">Validating target and preparing the scan.</div>
+                <div class="scan-progress-steps">
+                    <div id="scanStep1" class="scan-step active">1. Target</div>
+                    <div id="scanStep2" class="scan-step">2. Scan Setup</div>
+                    <div id="scanStep3" class="scan-step">3. Security Checks</div>
+                    <div id="scanStep4" class="scan-step">4. Complete</div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <div class="section">
+
+            <h2>
+                ⚠️ Recent Security Findings
+            </h2>
+
+            <div class="findings-filter">
+
+                <input
+                    type="text"
+                    id="findingSearch"
+                    class="findings-search"
+                    placeholder="🔎 Search findings..."
+                    oninput="filterFindings()"
+                    autocomplete="off">
+
+                <select
+                    id="severityFilter"
+                    class="findings-filter-select"
+                    onchange="filterFindings()">
+
+                    <option value="all">All Severity</option>
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                    <option value="info">Info / Passed</option>
+
+                </select>
+
+            </div>
+
+            <div class="findings-export-bar">
+
+                <button
+                    type="button"
+                    class="export-btn export-csv"
+                    onclick="exportFindingsCSV()">
+                    📥 Export CSV
+                </button>
+
+                <button
+                    type="button"
+                    class="export-btn export-json"
+                    onclick="exportFindingsJSON()">
+                    📄 Export JSON
+                </button>
+
+                <span id="exportFindingsInfo" class="export-info">
+                    Current scan findings
+                </span>
+
+            </div>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Check Type
+                            </th>
+
+                            <th>
+                                Title
+                            </th>
+
+                            <th>
+                                OWASP Category
+                            </th>
+
+                            <th>
+                                Severity
+                            </th>
+
+                            <th>
+                                URL
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="findingsTable">
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="empty-row">
+                                No findings loaded.
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <div class="section">
+
+            <h2>
+                📜 Scan History
+            </h2>
+
+            <p style="margin-top:-10px;margin-bottom:15px;color:#6b7280;font-size:13px;">
+                Risk Score is calculated from the findings of each completed scan.
+            </p>
+
+            <div class="history-actions">
+
+                <button
+                    class="refresh-btn"
+                    onclick="loadScanHistory()">
+                    🔄 Refresh
+                </button>
+
+            </div>
+
+            <div class="history-filter-bar">
+
+                <input
+                    type="search"
+                    id="historySearch"
+                    class="history-filter-input"
+                    placeholder="🔎 Search by target, scan ID or type..."
+                    oninput="filterScanHistory()">
+
+                <select
+                    id="historyStatusFilter"
+                    class="history-filter-select"
+                    onchange="filterScanHistory()">
+                    <option value="all">All Status</option>
+                    <option value="completed">Completed</option>
+                    <option value="running">Running</option>
+                    <option value="failed">Failed</option>
+                    <option value="error">Error</option>
+                </select>
+
+                <input
+                    type="date"
+                    id="historyFromDate"
+                    class="history-filter-date"
+                    title="From date"
+                    onchange="filterScanHistory()">
+
+                <input
+                    type="date"
+                    id="historyToDate"
+                    class="history-filter-date"
+                    title="To date"
+                    onchange="filterScanHistory()">
+
+                <button
+                    type="button"
+                    class="history-clear-btn"
+                    onclick="clearHistoryFilters()">
+                    Clear
+                </button>
+
+                <span
+                    id="historyFilterCount"
+                    class="history-filter-count">
+                    0 scans
+                </span>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Scan ID
+                            </th>
+
+                            <th>
+                                Target
+                            </th>
+
+                            <th>
+                                Type
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Findings
+                            </th>
+
+                            <th>
+                                Risk Score
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="scanHistoryTable">
+
+                        <tr>
+
+                            <td
+                                colspan="8"
+                                class="history-empty">
+                                Loading scan history...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <div class="section">
+
+            <h2>
+                📄 Security Report
+            </h2>
+
+            <p
+                style="margin-bottom:15px;color:#6b7280;">
+                Generate and download the latest PDF security report.
+            </p>
+
+
+            <button
+                class="download-btn"
+                id="downloadButton"
+                onclick="downloadReport()">
+                Download PDF Report
+            </button>
+
+        </div>
+
+    </main>
+
+
+    <!-- ================================
+         SCAN DETAILS MODAL
+    ================================= -->
+
+    <div id="scanDetailsModal" class="scan-modal">
+
+        <div class="scan-modal-content">
+
+            <div class="scan-modal-header">
+
+                <div>
+                    <h2>🔍 Security Finding Details</h2>
+                    <p id="modalScanInfo">Scan #-- • Detailed security assessment</p>
+                </div>
+
+                <button
+                    class="scan-modal-close"
+                    onclick="closeScanDetails()"
+                    aria-label="Close">
+                    &times;
+                </button>
+
+            </div>
+
+            <div id="scanDetailsBody">
+
+                <div class="scan-loading">
+                    Loading scan details...
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        // ==========================================
+        // AUTH TOKEN
+        // ==========================================
+
+        const token =
+            localStorage.getItem("token");
+
+
+        if (!token) {
+
+            window.location.href = "/login";
+
+        }
+
+
+        // ==========================================
+        // CURRENT SCAN ID
+        // ==========================================
+
+        let currentScanId =
+            localStorage.getItem("latestScanId");
+
+        // Findings currently loaded in the dashboard.
+        // Used for client-side CSV/JSON export.
+        let currentFindings = [];
+
+        // Premium dashboard analytics state.
+        let dashboardTrendData = [];
+        let dashboardAnalyticsSummary = {
+            critical: 0,
+            high: 0,
+            medium: 0,
+            low: 0,
+            info: 0,
+            total: 0,
+            owaspSummary: {}
+        };
+
+
+        // ==========================================
+        // SHOW MESSAGE
+        // ==========================================
+
+        function showMessage(message, type) {
+
+            const box =
+                document.getElementById("message");
+
+            box.innerText =
+                message;
+
+            box.className =
+                "message " + type;
+
+            box.style.display =
+                "block";
+
+        }
+
+
+        // ==========================================
+        // UPDATE SCAN INFO
+        // ==========================================
+
+        function updateScanInfo() {
+
+            const info =
+                document.getElementById("scanInfo");
+
+
+            if (currentScanId) {
+
+                info.innerText =
+                    `Current Scan ID: ${currentScanId}`;
+
+            }
+
+            else {
+
+                info.innerText =
+                    "No scan selected.";
+
+            }
+
+        }
+
+
+        // ==========================================
+        // EXTRACT ID
+        // ==========================================
+
+        function extractId(responseData) {
+
+            let id = null;
+
+
+            if (
+                responseData.data &&
+                !Array.isArray(responseData.data) &&
+                responseData.data.id
+            ) {
+
+                id =
+                    responseData.data.id;
+
+            }
+
+
+            else if (
+                responseData.data &&
+                Array.isArray(responseData.data) &&
+                responseData.data.length > 0 &&
+                responseData.data[0].id
+            ) {
+
+                id =
+                    responseData.data[0].id;
+
+            }
+
+
+            else if (responseData.id) {
+
+                id =
+                    responseData.id;
+
+            }
+
+
+            return id;
+
+        }
+
+
+        // ==========================================
+        // START SECURITY SCAN
+        // ==========================================
+
+        
+        // ==========================================
+        // SCAN PROGRESS UI
+        // ==========================================
+        function updateScanProgress(percent, title, status, activeStep) {
+            const panel=document.getElementById("scanProgress");
+            const bar=document.getElementById("scanProgressBar");
+            const percentEl=document.getElementById("scanProgressPercent");
+            const titleEl=document.getElementById("scanProgressTitle");
+            const statusEl=document.getElementById("scanProgressStatus");
+            if (!panel) return;
+            panel.classList.add("active");
+            const safePercent=Math.max(0,Math.min(100,Number(percent)||0));
+            bar.style.width=`${safePercent}%`;
+            percentEl.textContent=`${safePercent}%`;
+            titleEl.textContent=title;
+            statusEl.textContent=status;
+            for(let i=1;i<=4;i++){
+                const step=document.getElementById(`scanStep${i}`);
+                if(!step) continue;
+                step.classList.remove("active","done");
+                if(i<activeStep || safePercent>=100) step.classList.add("done");
+                else if(i===activeStep) step.classList.add("active");
+            }
+        }
+        function finishScanProgress(success) {
+            if(success) updateScanProgress(100,"Security scan completed","All requested passive security checks have finished.",4);
+            else updateScanProgress(0,"Scan stopped","The scan could not be completed. Check the message above and try again.",1);
+        }
+
+        async function startScan() {
+
+            const websiteInput =
+                document.getElementById("websiteUrl");
+
+            const scanButton =
+                document.getElementById("scanButton");
+
+            const websiteUrl =
+                websiteInput.value.trim();
+
+
+            if (!websiteUrl) {
+
+                showMessage(
+                    "Please enter a website URL.",
+                    "error"
+                );
+
+                websiteInput.focus();
+
+                return;
+
+            }
+
+
+            let parsedUrl;
+
+
+            try {
+
+                parsedUrl =
+                    new URL(websiteUrl);
+
+            }
+
+            catch (error) {
+
+                showMessage(
+                    "Please enter a valid website URL.",
+                    "error"
+                );
+
+                websiteInput.focus();
+
+                return;
+
+            }
+
+
+            if (
+                parsedUrl.protocol !== "http:" &&
+                parsedUrl.protocol !== "https:"
+            ) {
+
+                showMessage(
+                    "Only HTTP and HTTPS URLs are supported.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            scanButton.disabled =
+                true;
+
+            updateScanProgress(10,"Preparing security scan","Validating the target and creating the scan request.",1);
+
+            scanButton.innerText =
+                "Adding Target...";
+
+
+            try {
+
+                // ======================================
+                // STEP 1 - CREATE TARGET
+                // ======================================
+
+                const hostname =
+                    parsedUrl.hostname;
+
+
+                const targetResponse =
+                    await fetch(
+                        "/targets",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json",
+
+                                "Authorization":
+                                    `Bearer ${token}`
+                            },
+
+                            body: JSON.stringify({
+
+                                name:
+                                    hostname,
+
+                                url:
+                                    websiteUrl,
+
+                                domain:
+                                    hostname
+
+                            })
+
+                        }
+                    );
+
+
+                const targetData =
+                    await targetResponse.json();
+
+
+                if (!targetResponse.ok) {
+
+                    throw new Error(
+                        targetData.message ||
+                        targetData.error ||
+                        "Unable to create target."
+                    );
+
+                }
+
+
+                const targetId =
+                    extractId(targetData);
+
+
+                if (!targetId) {
+
+                    throw new Error(
+                        "Target was created but Target ID was not returned."
+                    );
+
+                }
+
+
+                showMessage(
+                    `Target added successfully. Target ID: ${targetId}`,
+                    "info"
+                );
+
+
+                // ======================================
+                // STEP 2 - CREATE SCAN
+                // ======================================
+
+                updateScanProgress(30,"Creating scan","Target accepted. Creating a new scan session.",2);
+
+                scanButton.innerText =
+                    "Creating Scan...";
+
+
+                const scanResponse =
+                    await fetch(
+                        "/scan",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json",
+
+                                "Authorization":
+                                    `Bearer ${token}`
+                            },
+
+                            body: JSON.stringify({
+
+                                target_id:
+                                    parseInt(targetId)
+
+                            })
+
+                        }
+                    );
+
+
+                const scanData =
+                    await scanResponse.json();
+
+
+                if (!scanResponse.ok) {
+
+                    throw new Error(
+                        scanData.message ||
+                        scanData.error ||
+                        "Unable to create scan."
+                    );
+
+                }
+
+
+                const createdScanId =
+                    extractId(scanData);
+
+
+                if (!createdScanId) {
+
+                    throw new Error(
+                        "Scan created but Scan ID was not returned."
+                    );
+
+                }
+
+
+                currentScanId =
+                    createdScanId;
+
+
+                localStorage.setItem(
+                    "latestScanId",
+                    currentScanId
+                );
+
+
+                updateScanInfo();
+
+
+                showMessage(
+                    `Scan created successfully. Scan ID: ${currentScanId}`,
+                    "info"
+                );
+
+
+                // ======================================
+                // STEP 3 - SECURITY SCAN
+                // ======================================
+
+                updateScanProgress(55,"Running security checks","Performing passive HTTPS, headers, cookies, TLS, DNS and configuration checks.",3);
+
+                scanButton.innerText =
+                    "Scanning...";
+
+
+                const securityResponse =
+                    await fetch(
+                        `/security-scan/${currentScanId}`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Authorization":
+                                    `Bearer ${token}`
+                            }
+                        }
+                    );
+
+
+                const securityData =
+                    await securityResponse.json();
+
+
+                console.log(
+                    "SECURITY SCAN:",
+                    securityData
+                );
+
+
+                if (!securityResponse.ok) {
+
+                    throw new Error(
+                        securityData.message ||
+                        securityData.error ||
+                        "Security scan failed."
+                    );
+
+                }
+
+
+                finishScanProgress(true);
+
+                showMessage(
+                    "Security scan completed successfully!",
+                    "success"
+                );
+
+
+                await loadFindings();
+
+                await loadScanHistory();
+
+            }
+
+
+            catch (error) {
+
+                console.error(
+                    "Scan error:",
+                    error
+                );
+
+
+                finishScanProgress(false);
+
+                showMessage(
+                    error.message ||
+                    "Something went wrong.",
+                    "error"
+                );
+
+            }
+
+
+            finally {
+
+                scanButton.disabled =
+                    false;
+
+                scanButton.innerText =
+                    "Start Scan";
+
+            }
+
+        }
+
+
+        // ==========================================
+        // LOAD FINDINGS
+        // ==========================================
+
+        async function loadFindings() {
+
+            if (!currentScanId) {
+
+                updateScanInfo();
+
+                resetRiskScore();
+                resetOwaspSummary();
+                resetSeverityDistribution();
+                dashboardTrendData = [];
+                renderPremiumAnalytics({
+                    critical: 0,
+                    high: 0,
+                    medium: 0,
+                    low: 0,
+                    info: 0,
+                    total: 0,
+                    owaspSummary: {}
+                });
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/scan-results/${currentScanId}`,
+                        {
+                            method: "GET",
+
+                            headers: {
+                                "Authorization":
+                                    `Bearer ${token}`
+                            }
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    console.error(
+                        "Unable to load findings:",
+                        data
+                    );
+
+                    return;
+
+                }
+
+
+                const results =
+                    data.data || [];
+
+                currentFindings = Array.isArray(results)
+                    ? results
+                    : [];
+
+                const exportInfo =
+                    document.getElementById("exportFindingsInfo");
+
+                if (exportInfo) {
+                    exportInfo.innerText =
+                        `${currentFindings.length} findings/checks available`;
+                }
+
+
+                const table =
+                    document.getElementById(
+                        "findingsTable"
+                    );
+
+                const findingSearch =
+                    document.getElementById(
+                        "findingSearch"
+                    );
+
+                const severityFilter =
+                    document.getElementById(
+                        "severityFilter"
+                    );
+
+                if (findingSearch) {
+                    findingSearch.value = "";
+                }
+
+                if (severityFilter) {
+                    severityFilter.value = "all";
+                }
+
+
+                table.innerHTML =
+                    "";
+
+
+                let critical = 0;
+                let high = 0;
+                let medium = 0;
+                let low = 0;
+                let info = 0;
+
+                const owaspSummary = {};
+
+
+                // ======================================
+                // NO FINDINGS
+                // ======================================
+
+                if (results.length === 0) {
+
+                    table.innerHTML = `
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="empty-row">
+
+                                No security findings found.
+
+                            </td>
+
+                        </tr>
+                    `;
+
+                }
+
+
+                // ======================================
+                // DISPLAY FINDINGS
+                // ======================================
+
+                results.forEach(result => {
+
+                    const severity =
+                        String(
+                            result.severity || ""
+                        ).toLowerCase();
+
+                    const owaspCategory =
+                        result.owasp_category ||
+                        "General Security Posture";
+
+                    if (!owaspSummary[owaspCategory]) {
+                        owaspSummary[owaspCategory] = {
+                            total: 0,
+                            open: 0,
+                            passed: 0
+                        };
+                    }
+
+                    owaspSummary[owaspCategory].total++;
+
+                    if (severity === "info") {
+                        owaspSummary[owaspCategory].passed++;
+                    } else {
+                        owaspSummary[owaspCategory].open++;
+                    }
+
+
+                    if (severity === "critical") {
+
+                        critical++;
+
+                    }
+
+                    else if (severity === "high") {
+
+                        high++;
+
+                    }
+
+                    else if (severity === "medium") {
+
+                        medium++;
+
+                    }
+
+                    else if (severity === "low") {
+
+                        low++;
+
+                    }
+
+                    else if (severity === "info") {
+
+                        info++;
+
+                    }
+
+
+                    let badgeClass =
+                        "badge-info";
+
+
+                    if (severity === "critical") {
+
+                        badgeClass =
+                            "badge-critical";
+
+                    }
+
+                    else if (severity === "high") {
+
+                        badgeClass =
+                            "badge-high";
+
+                    }
+
+                    else if (severity === "medium") {
+
+                        badgeClass =
+                            "badge-medium";
+
+                    }
+
+                    else if (severity === "low") {
+
+                        badgeClass =
+                            "badge-low";
+
+                    }
+
+
+                    let displayStatus;
+
+                    let statusClass;
+
+
+                    if (severity === "info") {
+
+                        displayStatus =
+                            "PASSED";
+
+                        statusClass =
+                            "status-passed";
+
+                    }
+
+                    else {
+
+                        displayStatus =
+                            "OPEN";
+
+                        statusClass =
+                            "status-open";
+
+                    }
+
+
+                    const row =
+                        document.createElement("tr");
+
+
+                    row.innerHTML = `
+
+                        <td>
+                            ${escapeHtml(
+                                result.check_type || "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                result.title || "-"
+                            )}
+                        </td>
+
+                        <td>
+                            <span class="owasp-badge">
+                                ${escapeHtml(
+                                    result.owasp_category ||
+                                    "General Security Posture"
+                                )}
+                            </span>
+                        </td>
+
+                        <td>
+
+                            <span
+                                class="badge ${badgeClass}">
+
+                                ${escapeHtml(
+                                    result.severity || "info"
+                                )}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                result.affected_url || "-"
+                            )}
+                        </td>
+
+                        <td>
+
+                            <span
+                                class="status-badge ${statusClass}">
+
+                                ${displayStatus}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+                            <button
+                                type="button"
+                                class="finding-view-btn"
+                                onclick="viewFindingDetails(${results.indexOf(result)})">
+                                View
+                            </button>
+                        </td>
+
+                    `;
+
+
+                    table.appendChild(row);
+
+                });
+
+
+                // ======================================
+                // SUMMARY
+                // ======================================
+
+                const actualFindings =
+                    critical +
+                    high +
+                    medium +
+                    low;
+
+                const securityChecks =
+                    results.length;
+
+
+                document.getElementById(
+                    "securityChecks"
+                ).innerText =
+                    securityChecks;
+
+
+                document.getElementById(
+                    "totalFindings"
+                ).innerText =
+                    actualFindings;
+
+
+                document.getElementById(
+                    "criticalCount"
+                ).innerText =
+                    critical;
+
+
+                document.getElementById(
+                    "highCount"
+                ).innerText =
+                    high;
+
+
+                document.getElementById(
+                    "mediumCount"
+                ).innerText =
+                    medium;
+
+
+                document.getElementById(
+                    "lowCount"
+                ).innerText =
+                    low;
+
+
+                // ======================================
+                // SECURITY RISK SCORE
+                // ======================================
+
+                let riskScore = 100;
+
+                riskScore -= critical * 25;
+                riskScore -= high * 15;
+                riskScore -= medium * 8;
+                riskScore -= low * 3;
+
+
+                riskScore =
+                    Math.max(
+                        0,
+                        Math.min(100, riskScore)
+                    );
+
+
+                let riskLevel = "EXCELLENT";
+                let riskBadge = "LOW RISK";
+
+                let riskDescription =
+                    "No security issues detected. Your current scan has a strong security posture.";
+
+                let circleClass =
+                    "risk-excellent";
+
+                let badgeClassRisk =
+                    "level-excellent";
+
+
+                if (riskScore >= 90) {
+
+                    riskLevel =
+                        "EXCELLENT";
+
+                    riskBadge =
+                        "LOW RISK";
+
+                    riskDescription =
+                        "Very few or no security issues were detected in this scan.";
+
+                    circleClass =
+                        "risk-excellent";
+
+                    badgeClassRisk =
+                        "level-excellent";
+
+                }
+
+                else if (riskScore >= 75) {
+
+                    riskLevel =
+                        "GOOD";
+
+                    riskBadge =
+                        "LOW RISK";
+
+                    riskDescription =
+                        "The scan found some minor security issues that should be reviewed.";
+
+                    circleClass =
+                        "risk-good";
+
+                    badgeClassRisk =
+                        "level-good";
+
+                }
+
+                else if (riskScore >= 50) {
+
+                    riskLevel =
+                        "MEDIUM";
+
+                    riskBadge =
+                        "MEDIUM RISK";
+
+                    riskDescription =
+                        "Several security issues were detected. Review the findings and apply remediation.";
+
+                    circleClass =
+                        "risk-medium";
+
+                    badgeClassRisk =
+                        "level-medium";
+
+                }
+
+                else if (riskScore >= 25) {
+
+                    riskLevel =
+                        "HIGH RISK";
+
+                    riskBadge =
+                        "HIGH RISK";
+
+                    riskDescription =
+                        "Important security issues were detected and should be addressed promptly.";
+
+                    circleClass =
+                        "risk-high";
+
+                    badgeClassRisk =
+                        "level-high";
+
+                }
+
+                else {
+
+                    riskLevel =
+                        "CRITICAL RISK";
+
+                    riskBadge =
+                        "CRITICAL RISK";
+
+                    riskDescription =
+                        "Critical security issues were detected. Immediate remediation is recommended.";
+
+                    circleClass =
+                        "risk-critical";
+
+                    badgeClassRisk =
+                        "level-critical";
+
+                }
+
+
+                let riskColor = "#16a34a";
+
+                if (riskScore >= 90) {
+                    riskColor = "#16a34a";
+                } else if (riskScore >= 75) {
+                    riskColor = "#22c55e";
+                } else if (riskScore >= 50) {
+                    riskColor = "#eab308";
+                } else if (riskScore >= 25) {
+                    riskColor = "#f97316";
+                } else {
+                    riskColor = "#dc2626";
+                }
+
+                let riskPriorityText =
+                    "No open findings detected. Continue monitoring your security controls.";
+
+                if (critical > 0) {
+                    riskPriorityText =
+                        "Address Critical findings first. These have the highest impact on the current risk score.";
+                } else if (high > 0) {
+                    riskPriorityText =
+                        "Address High-severity findings first, then review Medium and Low findings.";
+                } else if (medium > 0) {
+                    riskPriorityText =
+                        "Review the Medium-severity findings first and apply the recommended remediation.";
+                } else if (low > 0) {
+                    riskPriorityText =
+                        "Review the Low-severity findings and apply the listed hardening recommendations.";
+                }
+
+                const riskCircle =
+                    document.getElementById(
+                        "riskScoreCircle"
+                    );
+
+
+                const riskScoreElement =
+                    document.getElementById(
+                        "riskScore"
+                    );
+
+
+                const riskLevelElement =
+                    document.getElementById(
+                        "riskLevel"
+                    );
+
+
+                const riskBadgeElement =
+                    document.getElementById(
+                        "riskBadge"
+                    );
+
+
+                const riskDescriptionElement =
+                    document.getElementById(
+                        "riskDescription"
+                    );
+
+                const riskMeterBar =
+                    document.getElementById(
+                        "riskMeterBar"
+                    );
+
+                const riskMeterLabel =
+                    document.getElementById(
+                        "riskMeterLabel"
+                    );
+
+                const riskPriorityElement =
+                    document.getElementById(
+                        "riskPriorityText"
+                    );
+
+                const riskTotalChecksElement =
+                    document.getElementById(
+                        "riskTotalChecks"
+                    );
+
+                const riskOpenFindingsElement =
+                    document.getElementById(
+                        "riskOpenFindings"
+                    );
+
+
+                if (riskCircle) {
+
+                    riskCircle.className =
+                        "risk-score-circle " +
+                        circleClass;
+
+                    riskCircle.style.setProperty(
+                        "--risk-angle",
+                        (riskScore * 3.6) + "deg"
+                    );
+
+                    riskCircle.style.setProperty(
+                        "--risk-color",
+                        riskColor
+                    );
+
+                }
+
+
+                if (riskScoreElement) {
+
+                    riskScoreElement.innerText =
+                        riskScore;
+
+                }
+
+
+                if (riskLevelElement) {
+
+                    riskLevelElement.innerText =
+                        riskLevel;
+
+                }
+
+
+                if (riskBadgeElement) {
+
+                    riskBadgeElement.className =
+                        "risk-level " +
+                        badgeClassRisk;
+
+                    riskBadgeElement.innerText =
+                        riskBadge;
+
+                }
+
+
+                if (riskDescriptionElement) {
+
+                    riskDescriptionElement.innerText =
+                        riskDescription;
+
+                }
+
+                if (riskMeterBar) {
+
+                    riskMeterBar.style.width =
+                        riskScore + "%";
+
+                    riskMeterBar.style.background =
+                        riskColor;
+
+                }
+
+                if (riskMeterLabel) {
+
+                    riskMeterLabel.innerText =
+                        riskScore + " / 100";
+
+                }
+
+                if (riskPriorityElement) {
+
+                    riskPriorityElement.innerText =
+                        riskPriorityText;
+
+                }
+
+                if (riskTotalChecksElement) {
+
+                    riskTotalChecksElement.innerText =
+                        results.length;
+
+                }
+
+                if (riskOpenFindingsElement) {
+
+                    riskOpenFindingsElement.innerText =
+                        actualFindings;
+
+                }
+
+
+                document.getElementById(
+                    "riskCritical"
+                ).innerText =
+                    critical;
+
+
+                document.getElementById(
+                    "riskHigh"
+                ).innerText =
+                    high;
+
+
+                document.getElementById(
+                    "riskMedium"
+                ).innerText =
+                    medium;
+
+
+                document.getElementById(
+                    "riskLow"
+                ).innerText =
+                    low;
+
+
+                // ======================================
+                // OWASP SECURITY SUMMARY
+                // ======================================
+
+                renderOwaspSummary(owaspSummary);
+
+                renderSeverityDistribution({
+                    critical,
+                    high,
+                    medium,
+                    low,
+                    info
+                });
+
+                renderPremiumAnalytics({
+                    critical,
+                    high,
+                    medium,
+                    low,
+                    info,
+                    total: results.length,
+                    owaspSummary
+                });
+
+
+                updateScanInfo();
+
+            }
+
+
+            catch (error) {
+
+                console.error(
+                    "Load findings error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        // ==========================================
+        // FINDINGS SEARCH & FILTER
+        // ==========================================
+
+        // ==========================================
+        // EXPORT FINDINGS
+        // ==========================================
+
+        function getExportRows() {
+
+            const searchInput =
+                document.getElementById("findingSearch");
+
+            const severityFilter =
+                document.getElementById("severityFilter");
+
+            const searchText =
+                (searchInput?.value || "")
+                    .toLowerCase()
+                    .trim();
+
+            const severity =
+                (severityFilter?.value || "all")
+                    .toLowerCase();
+
+            return currentFindings.filter(result => {
+
+                const haystack = [
+                    result.check_type,
+                    result.title,
+                    result.owasp_category,
+                    result.severity,
+                    result.affected_url,
+                    result.description,
+                    result.evidence,
+                    result.remediation
+                ]
+                    .map(value => String(value || ""))
+                    .join(" ")
+                    .toLowerCase();
+
+                const matchesSearch =
+                    !searchText ||
+                    haystack.includes(searchText);
+
+                const resultSeverity =
+                    String(result.severity || "info")
+                        .toLowerCase();
+
+                const matchesSeverity =
+                    severity === "all" ||
+                    resultSeverity === severity;
+
+                return matchesSearch && matchesSeverity;
+            });
+        }
+
+        function downloadTextFile(content, filename, mimeType) {
+
+            const blob =
+                new Blob([content], { type: mimeType });
+
+            const url =
+                URL.createObjectURL(blob);
+
+            const link =
+                document.createElement("a");
+
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+            URL.revokeObjectURL(url);
+        }
+
+        function csvEscape(value) {
+
+            const text =
+                String(value ?? "")
+                    .replace(/\r?|\r/g, " ");
+
+            return `"${text.replace(/"/g, '""')}"`;
+        }
+
+        function exportFindingsCSV() {
+
+            const rows = getExportRows();
+
+            if (!rows.length) {
+                alert("No findings match the current filters.");
+                return;
+            }
+
+            const headers = [
+                "Check Type",
+                "Title",
+                "OWASP Category",
+                "Severity",
+                "Status",
+                "Affected URL",
+                "Description",
+                "Evidence",
+                "Remediation"
+            ];
+
+            const lines = [
+                headers.map(csvEscape).join(",")
+            ];
+
+            rows.forEach(result => {
+
+                const severity =
+                    String(result.severity || "info")
+                        .toLowerCase();
+
+                lines.push([
+                    result.check_type || "",
+                    result.title || "",
+                    result.owasp_category ||
+                        "General Security Posture",
+                    result.severity || "info",
+                    severity === "info" ? "PASSED" : "OPEN",
+                    result.affected_url || "",
+                    result.description || "",
+                    result.evidence || "",
+                    result.remediation || ""
+                ].map(csvEscape).join(","));
+            });
+
+            const scanId = currentScanId || "scan";
+
+            downloadTextFile(
+                "\ufeff" + lines.join(""),
+                `webshield-pro-scan-${scanId}-findings.csv`,
+                "text/csv;charset=utf-8"
+            );
+        }
+
+        function exportFindingsJSON() {
+
+            const rows = getExportRows();
+
+            if (!rows.length) {
+                alert("No findings match the current filters.");
+                return;
+            }
+
+            const exportData = {
+                tool: "WebShield Pro",
+                scan_id: currentScanId || null,
+                exported_at: new Date().toISOString(),
+                total_records: rows.length,
+                findings: rows.map(result => ({
+                    check_type: result.check_type || "",
+                    title: result.title || "",
+                    owasp_category:
+                        result.owasp_category ||
+                        "General Security Posture",
+                    severity: result.severity || "info",
+                    status:
+                        String(result.severity || "info")
+                            .toLowerCase() === "info"
+                            ? "PASSED"
+                            : "OPEN",
+                    affected_url: result.affected_url || "",
+                    description: result.description || "",
+                    evidence: result.evidence || "",
+                    remediation: result.remediation || ""
+                }))
+            };
+
+            const scanId = currentScanId || "scan";
+
+            downloadTextFile(
+                JSON.stringify(exportData, null, 2),
+                `webshield-pro-scan-${scanId}-findings.json`,
+                "application/json;charset=utf-8"
+            );
+        }
+
+        function filterFindings() {
+
+            const searchInput =
+                document.getElementById("findingSearch");
+
+            const severityFilter =
+                document.getElementById("severityFilter");
+
+            const table =
+                document.getElementById("findingsTable");
+
+            if (!searchInput || !severityFilter || !table) {
+                return;
+            }
+
+            const searchText =
+                searchInput.value
+                    .toLowerCase()
+                    .trim();
+
+            const selectedSeverity =
+                severityFilter.value
+                    .toLowerCase();
+
+            const rows =
+                Array.from(table.querySelectorAll("tr"));
+
+            let visibleRows = 0;
+
+            rows.forEach(row => {
+
+                if (
+                    row.classList.contains("empty-row") ||
+                    row.classList.contains("findings-no-match")
+                ) {
+                    return;
+                }
+
+                const rowText =
+                    row.innerText
+                        .toLowerCase();
+
+                const severityCell =
+                    row.cells[3];
+
+                const rowSeverity =
+                    severityCell
+                        ? severityCell.innerText
+                            .toLowerCase()
+                            .trim()
+                        : "";
+
+                const searchMatch =
+                    rowText.includes(searchText);
+
+                const severityMatch =
+                    selectedSeverity === "all" ||
+                    rowSeverity.includes(selectedSeverity);
+
+                if (
+                    searchMatch &&
+                    severityMatch
+                ) {
+                    row.style.display = "";
+                    visibleRows++;
+                }
+                else {
+                    row.style.display = "none";
+                }
+
+            });
+
+            const existingNoMatch =
+                table.querySelector(".findings-no-match");
+
+            if (existingNoMatch) {
+                existingNoMatch.remove();
+            }
+
+            if (
+                rows.length > 0 &&
+                visibleRows === 0 &&
+                !table.querySelector(".empty-row")
+            ) {
+
+                const noMatchRow =
+                    document.createElement("tr");
+
+                noMatchRow.className =
+                    "findings-no-match";
+
+                noMatchRow.innerHTML = `
+                    <td colspan="6">
+                        No matching findings found.
+                    </td>
+                `;
+
+                table.appendChild(noMatchRow);
+            }
+
+        }
+
+
+        // ==========================================
+        // RESET RISK SCORE
+        // ==========================================
+
+        function resetRiskScore() {
+
+            const riskCircle =
+                document.getElementById(
+                    "riskScoreCircle"
+                );
+
+            const riskScoreElement =
+                document.getElementById(
+                    "riskScore"
+                );
+
+            const riskLevelElement =
+                document.getElementById(
+                    "riskLevel"
+                );
+
+            const riskBadgeElement =
+                document.getElementById(
+                    "riskBadge"
+                );
+
+            const riskDescriptionElement =
+                document.getElementById(
+                    "riskDescription"
+                );
+
+
+            if (riskCircle) {
+
+                riskCircle.className =
+                    "risk-score-circle risk-excellent";
+
+            }
+
+
+            if (riskScoreElement) {
+
+                riskScoreElement.innerText =
+                    "100";
+
+            }
+
+
+            if (riskLevelElement) {
+
+                riskLevelElement.innerText =
+                    "EXCELLENT";
+
+            }
+
+
+            if (riskBadgeElement) {
+
+                riskBadgeElement.className =
+                    "risk-level level-excellent";
+
+                riskBadgeElement.innerText =
+                    "LOW RISK";
+
+            }
+
+
+            if (riskDescriptionElement) {
+
+                riskDescriptionElement.innerText =
+                    "No security issues detected. Your current scan has a strong security posture.";
+
+            }
+
+
+            const critical =
+                document.getElementById("riskCritical");
+
+            const high =
+                document.getElementById("riskHigh");
+
+            const medium =
+                document.getElementById("riskMedium");
+
+            const low =
+                document.getElementById("riskLow");
+
+
+            if (critical) critical.innerText = "0";
+            if (high) high.innerText = "0";
+            if (medium) medium.innerText = "0";
+            if (low) low.innerText = "0";
+
+            resetOwaspSummary();
+
+        }
+                // ==========================================
+        // OWASP SECURITY SUMMARY
+        // ==========================================
+
+        function renderOwaspSummary(summary) {
+
+            const container =
+                document.getElementById("owaspSummary");
+
+            if (!container) {
+                return;
+            }
+
+            const entries =
+                Object.entries(summary || {});
+
+            if (!entries.length) {
+                resetOwaspSummary();
+                return;
+            }
+
+            const totalChecks =
+                entries.reduce(
+                    (sum, [, item]) =>
+                        sum + Number(item.total || 0),
+                    0
+                );
+
+            entries.sort(
+                (a, b) =>
+                    Number(b[1].total || 0) -
+                    Number(a[1].total || 0)
+            );
+
+            container.innerHTML =
+                entries.map(
+                    ([category, item]) => {
+
+                        const total =
+                            Number(item.total || 0);
+
+                        const open =
+                            Number(item.open || 0);
+
+                        const passed =
+                            Number(item.passed || 0);
+
+                        const percentage =
+                            totalChecks > 0
+                                ? Math.round(
+                                    (total / totalChecks) * 100
+                                )
+                                : 0;
+
+                        return `
+                            <div class="owasp-summary-card">
+
+                                <div class="owasp-summary-top">
+
+                                    <div class="owasp-summary-name">
+                                        ${escapeHtml(category)}
+                                    </div>
+
+                                    <span class="owasp-summary-count">
+                                        ${total} checks
+                                    </span>
+
+                                </div>
+
+                                <div class="owasp-progress">
+                                    <div
+                                        class="owasp-progress-bar"
+                                        style="width:${percentage}%;">
+                                    </div>
+                                </div>
+
+                                <div class="owasp-summary-meta">
+
+                                    <span>
+                                        Passed: ${passed}
+                                    </span>
+
+                                    <span>
+                                        Open: ${open}
+                                    </span>
+
+                                </div>
+
+                            </div>
+                        `;
+
+                    }
+                ).join("");
+
+        }
+
+
+        function resetOwaspSummary() {
+
+            const container =
+                document.getElementById("owaspSummary");
+
+            if (!container) {
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="owasp-summary-empty">
+                    Run a security scan to view the OWASP category summary.
+                </div>
+            `;
+
+        }
+
+
+        // ==========================================
+        // SEVERITY DISTRIBUTION
+        // ==========================================
+
+        function renderSeverityDistribution(counts) {
+
+            const container =
+                document.getElementById("severityDistribution");
+
+            if (!container) {
+                return;
+            }
+
+            const items = [
+                {
+                    label: "Critical",
+                    value: Number(counts.critical || 0),
+                    className: "severity-bar-critical"
+                },
+                {
+                    label: "High",
+                    value: Number(counts.high || 0),
+                    className: "severity-bar-high"
+                },
+                {
+                    label: "Medium",
+                    value: Number(counts.medium || 0),
+                    className: "severity-bar-medium"
+                },
+                {
+                    label: "Low",
+                    value: Number(counts.low || 0),
+                    className: "severity-bar-low"
+                },
+                {
+                    label: "Info / Passed",
+                    value: Number(counts.info || 0),
+                    className: "severity-bar-info"
+                }
+            ];
+
+            const total =
+                items.reduce(
+                    (sum, item) => sum + item.value,
+                    0
+                );
+
+            if (total === 0) {
+                resetSeverityDistribution();
+                return;
+            }
+
+            const maxValue =
+                Math.max(
+                    ...items.map(item => item.value),
+                    1
+                );
+
+            container.innerHTML = `
+                <div class="severity-chart">
+
+                    ${items.map(item => {
+
+                        const width =
+                            item.value > 0
+                                ? Math.max(
+                                    4,
+                                    Math.round(
+                                        (item.value / maxValue) * 100
+                                    )
+                                )
+                                : 0;
+
+                        return `
+                            <div class="severity-row">
+
+                                <div class="severity-label">
+                                    ${escapeHtml(item.label)}
+                                </div>
+
+                                <div class="severity-track">
+                                    <div
+                                        class="severity-bar ${item.className}"
+                                        style="width:${width}%;">
+                                    </div>
+                                </div>
+
+                                <div class="severity-value">
+                                    ${item.value}
+                                </div>
+
+                            </div>
+                        `;
+
+                    }).join("")}
+
+                    <div class="severity-chart-total">
+                        <span>Total Checks</span>
+                        <strong>${total}</strong>
+                    </div>
+
+                </div>
+            `;
+
+        }
+
+
+        function resetSeverityDistribution() {
+
+            const container =
+                document.getElementById(
+                    "severityDistribution"
+                );
+
+            if (!container) {
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="owasp-summary-empty">
+                    Run a security scan to view the severity distribution.
+                </div>
+            `;
+
+        }
+
+
+        // ==========================================
+        // LOAD SCAN HISTORY
+        // ==========================================
+
+        async function loadScanHistory() {
+
+            const table =
+                document.getElementById(
+                    "scanHistoryTable"
+                );
+
+
+            table.innerHTML = `
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="history-empty">
+
+                        Loading scan history...
+
+                    </td>
+
+                </tr>
+            `;
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/scan-history",
+                        {
+                            method: "GET",
+
+                            headers: {
+                                "Authorization":
+                                    `Bearer ${token}`
+                            }
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        data.error ||
+                        "Unable to load scan history."
+                    );
+
+                }
+
+
+                const scans =
+                    Array.isArray(data)
+                        ? data
+                        : (
+                            data.data ||
+                            data.scans ||
+                            []
+                        );
+
+
+                table.innerHTML =
+                    "";
+
+
+                if (!scans.length) {
+
+                    table.innerHTML = `
+                        <tr>
+
+                            <td
+                                colspan="8"
+                                class="history-empty">
+
+                                No previous scans found.
+
+                            </td>
+
+                        </tr>
+                    `;
+
+                    return;
+
+                }
+
+
+                // ======================================
+                // LOAD EACH SCAN
+                // ======================================
+
+                const trendData = [];
+
+                const historyRows =
+                    await Promise.all(
+
+                        scans.map(
+                            async scan => {
+
+                                const scanId =
+                                    scan.id ?? "-";
+
+
+                                const target =
+                                    scan.target_url ||
+                                    scan.url ||
+                                    scan.target ||
+                                    (
+                                        scan.target_id
+                                            ? `Target #${scan.target_id}`
+                                            : "-"
+                                    );
+
+
+                                const scanType =
+                                    scan.scan_type ||
+                                    scan.type ||
+                                    "full";
+
+
+                                const status =
+                                    String(
+                                        scan.status ||
+                                        "unknown"
+                                    ).toLowerCase();
+
+
+                                const totalFindings =
+                                    Number(
+                                        scan.total_findings ?? 0
+                                    );
+
+
+                                const createdAt =
+                                    scan.created_at ||
+                                    scan.started_at ||
+                                    scan.completed_at ||
+                                    null;
+
+
+                                let formattedDate =
+                                    "-";
+
+
+                                if (createdAt) {
+
+                                    const date =
+                                        new Date(
+                                            createdAt
+                                        );
+
+
+                                    if (
+                                        !isNaN(
+                                            date.getTime()
+                                        )
+                                    ) {
+
+                                        formattedDate =
+                                            date.toLocaleString();
+
+                                    }
+
+                                }
+
+
+                                // ==================================
+                                // STATUS CLASS
+                                // ==================================
+
+                                let statusClass =
+                                    "history-running";
+
+
+                                if (
+                                    status === "completed"
+                                ) {
+
+                                    statusClass =
+                                        "history-completed";
+
+                                }
+
+                                else if (
+                                    status === "failed" ||
+                                    status === "error"
+                                ) {
+
+                                    statusClass =
+                                        "history-failed";
+
+                                }
+
+
+                                // ==================================
+                                // RISK SCORE
+                                // ==================================
+
+                                let riskScore = null;
+
+                                let riskLevel =
+                                    "NOT AVAILABLE";
+
+
+                                try {
+
+                                    // First try the backend summary API.
+                                    const riskResponse =
+                                        await fetch(
+                                            `/scan-summary/${scanId}`,
+                                            {
+                                                method: "GET",
+
+                                                headers: {
+                                                    "Authorization":
+                                                        `Bearer ${token}`
+                                                }
+                                            }
+                                        );
+
+
+                                    const riskData =
+                                        await riskResponse.json();
+
+
+                                    if (
+                                        riskResponse.ok &&
+                                        riskData.risk_score !== undefined &&
+                                        riskData.risk_score !== null
+                                    ) {
+
+                                        riskScore =
+                                            Number(
+                                                riskData.risk_score
+                                            );
+
+
+                                        riskLevel =
+                                            String(
+                                                riskData.risk_level ||
+                                                "NOT AVAILABLE"
+                                            );
+
+                                    }
+
+
+                                    // If backend summary does not return a
+                                    // score, calculate it directly from the
+                                    // scan findings as a reliable fallback.
+                                    if (
+                                        riskScore === null ||
+                                        isNaN(riskScore)
+                                    ) {
+
+                                        const findingsResponse =
+                                            await fetch(
+                                                `/scan-results/${scanId}`,
+                                                {
+                                                    method: "GET",
+
+                                                    headers: {
+                                                        "Authorization":
+                                                            `Bearer ${token}`
+                                                    }
+                                                }
+                                            );
+
+
+                                        const findingsData =
+                                            await findingsResponse.json();
+
+
+                                        if (
+                                            findingsResponse.ok
+                                        ) {
+
+                                            const scanResults =
+                                                Array.isArray(
+                                                    findingsData.data
+                                                )
+                                                    ? findingsData.data
+                                                    : [];
+
+
+                                            let criticalFindings = 0;
+                                            let highFindings = 0;
+                                            let mediumFindings = 0;
+                                            let lowFindings = 0;
+
+
+                                            scanResults.forEach(
+                                                result => {
+
+                                                    const severity =
+                                                        String(
+                                                            result.severity ||
+                                                            ""
+                                                        ).toLowerCase();
+
+
+                                                    if (
+                                                        severity ===
+                                                        "critical"
+                                                    ) {
+
+                                                        criticalFindings++;
+
+                                                    }
+
+                                                    else if (
+                                                        severity ===
+                                                        "high"
+                                                    ) {
+
+                                                        highFindings++;
+
+                                                    }
+
+                                                    else if (
+                                                        severity ===
+                                                        "medium"
+                                                    ) {
+
+                                                        mediumFindings++;
+
+                                                    }
+
+                                                    else if (
+                                                        severity ===
+                                                        "low"
+                                                    ) {
+
+                                                        lowFindings++;
+
+                                                    }
+
+                                                }
+                                            );
+
+
+                                            riskScore = 100;
+
+                                            riskScore -=
+                                                criticalFindings * 25;
+
+                                            riskScore -=
+                                                highFindings * 15;
+
+                                            riskScore -=
+                                                mediumFindings * 8;
+
+                                            riskScore -=
+                                                lowFindings * 3;
+
+
+                                            riskScore =
+                                                Math.max(
+                                                    0,
+                                                    Math.min(
+                                                        100,
+                                                        riskScore
+                                                    )
+                                                );
+
+
+                                            if (
+                                                riskScore >= 90
+                                            ) {
+
+                                                riskLevel =
+                                                    "EXCELLENT";
+
+                                            }
+
+                                            else if (
+                                                riskScore >= 75
+                                            ) {
+
+                                                riskLevel =
+                                                    "GOOD";
+
+                                            }
+
+                                            else if (
+                                                riskScore >= 50
+                                            ) {
+
+                                                riskLevel =
+                                                    "MEDIUM";
+
+                                            }
+
+                                            else if (
+                                                riskScore >= 25
+                                            ) {
+
+                                                riskLevel =
+                                                    "HIGH RISK";
+
+                                            }
+
+                                            else {
+
+                                                riskLevel =
+                                                    "CRITICAL RISK";
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+
+                                catch (riskError) {
+
+                                    console.warn(
+                                        `Risk score unavailable for Scan #${scanId}:`,
+                                        riskError
+                                    );
+
+                                }
+
+
+                                // ==================================
+                                // RISK COLOR
+                                // ==================================
+
+                                let riskClass =
+                                    "history-risk-unknown";
+
+
+                                if (
+                                    riskScore !== null &&
+                                    !isNaN(riskScore)
+                                ) {
+
+                                    if (
+                                        riskScore >= 90
+                                    ) {
+
+                                        riskClass =
+                                            "history-risk-excellent";
+
+                                    }
+
+                                    else if (
+                                        riskScore >= 75
+                                    ) {
+
+                                        riskClass =
+                                            "history-risk-good";
+
+                                    }
+
+                                    else if (
+                                        riskScore >= 50
+                                    ) {
+
+                                        riskClass =
+                                            "history-risk-medium";
+
+                                    }
+
+                                    else if (
+                                        riskScore >= 25
+                                    ) {
+
+                                        riskClass =
+                                            "history-risk-high";
+
+                                    }
+
+                                    else {
+
+                                        riskClass =
+                                            "history-risk-critical";
+
+                                    }
+
+                                }
+
+
+                                // ==================================
+                                // RISK DISPLAY
+                                // ==================================
+
+                                const riskDisplay =
+                                    riskScore !== null &&
+                                    !isNaN(riskScore)
+
+                                        ? `${riskScore}/100`
+
+                                        : "-";
+
+
+                                // ==================================
+                                // SECURITY TREND DATA
+                                // ==================================
+
+                                trendData.push({
+                                    scanId: scanId,
+                                    date: createdAt,
+                                    riskScore: (riskScore !== null && !isNaN(riskScore)) ? riskScore : null,
+                                    findings: totalFindings
+                                });
+
+
+                                // ==================================
+                                // CREATE ROW
+                                // ==================================
+
+                                const row =
+                                    document.createElement(
+                                        "tr"
+                                    );
+
+
+                                row.innerHTML = `
+
+                                    <td>
+
+                                        #${escapeHtml(
+                                            String(scanId)
+                                        )}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        ${escapeHtml(
+                                            String(target)
+                                        )}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        ${escapeHtml(
+                                            String(scanType)
+                                        )}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <span
+                                            class="${statusClass}">
+
+                                            ${escapeHtml(
+                                                status.toUpperCase()
+                                            )}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        ${escapeHtml(
+                                            String(totalFindings)
+                                        )}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <span
+                                            class="history-risk ${riskClass}"
+                                            title="${escapeHtml(
+                                                riskLevel
+                                            )}">
+
+                                            ${escapeHtml(
+                                                riskDisplay
+                                            )}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        ${escapeHtml(
+                                            formattedDate
+                                        )}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <button
+                                            class="view-btn"
+                                            onclick="viewScan(${Number(scanId)})">
+
+                                            View
+
+                                        </button>
+
+                                    </td>
+
+                                `;
+
+                                row.dataset.search = `${String(scanId)} ${String(target)} ${String(scanType)}`.toLowerCase();
+                                row.dataset.status = status;
+                                row.dataset.date = createdAt ? String(createdAt).slice(0, 10) : "";
+
+                                return row;
+
+                            }
+                        )
+                    );
+
+
+                // ======================================
+                // APPEND ROWS
+                // ======================================
+
+                historyRows.forEach(
+                    row => {
+
+                        table.appendChild(
+                            row
+                        );
+
+                    }
+                );
+
+                updateHistoryFilterCount();
+                renderSecurityTrend(trendData);
+
+            }
+
+
+            catch (error) {
+
+                console.error(
+                    "Scan history error:",
+                    error
+                );
+
+
+                table.innerHTML = `
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="history-empty">
+
+                            Scan history API is not available yet.
+
+                        </td>
+
+                    </tr>
+                `;
+
+            }
+
+        }
+
+
+        // ==========================================
+        // SCAN HISTORY FILTERS
+        // ==========================================
+
+        function filterScanHistory() {
+
+            const table = document.getElementById("scanHistoryTable");
+            const rows = Array.from(table.querySelectorAll("tr"));
+            const search = String(
+                document.getElementById("historySearch")?.value || ""
+            ).trim().toLowerCase();
+            const status = String(
+                document.getElementById("historyStatusFilter")?.value || "all"
+            ).toLowerCase();
+            const fromDate = document.getElementById("historyFromDate")?.value || "";
+            const toDate = document.getElementById("historyToDate")?.value || "";
+
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const rowSearch = row.dataset.search || "";
+                const rowStatus = row.dataset.status || "";
+                const rowDate = row.dataset.date || "";
+
+                const matchesSearch = !search || rowSearch.includes(search);
+                const matchesStatus = status === "all" || rowStatus === status;
+                const matchesFrom = !fromDate || (rowDate && rowDate >= fromDate);
+                const matchesTo = !toDate || (rowDate && rowDate <= toDate);
+
+                const visible =
+                    matchesSearch &&
+                    matchesStatus &&
+                    matchesFrom &&
+                    matchesTo;
+
+                row.style.display = visible ? "" : "none";
+
+                if (visible) {
+                    visibleCount += 1;
+                }
+            });
+
+            updateHistoryFilterCount(visibleCount);
+
+            if (rows.length && visibleCount === 0) {
+                const existingEmpty = table.querySelector(".history-filter-empty");
+                if (!existingEmpty) {
+                    const emptyRow = document.createElement("tr");
+                    emptyRow.className = "history-filter-empty";
+                    emptyRow.innerHTML = `
+                        <td colspan="8" class="history-empty">
+                            No scans match the selected filters.
+                        </td>
+                    `;
+                    table.appendChild(emptyRow);
+                }
+            }
+            else {
+                const emptyRow = table.querySelector(".history-filter-empty");
+                if (emptyRow) emptyRow.remove();
+            }
+        }
+
+
+        function updateHistoryFilterCount(count = null) {
+
+            const counter = document.getElementById("historyFilterCount");
+            if (!counter) return;
+
+            if (count === null) {
+                const rows = Array.from(
+                    document.querySelectorAll("#scanHistoryTable tr:not(.history-filter-empty)")
+                );
+                count = rows.filter(row => row.style.display !== "none").length;
+            }
+
+            counter.textContent = `${count} scan${count === 1 ? "" : "s"}`;
+        }
+
+
+        function clearHistoryFilters() {
+
+            const search = document.getElementById("historySearch");
+            const status = document.getElementById("historyStatusFilter");
+            const fromDate = document.getElementById("historyFromDate");
+            const toDate = document.getElementById("historyToDate");
+
+            if (search) search.value = "";
+            if (status) status.value = "all";
+            if (fromDate) fromDate.value = "";
+            if (toDate) toDate.value = "";
+
+            filterScanHistory();
+        }
+
+
+        // ==========================================
+        // SECURITY TREND
+        // ==========================================
+
+        function renderSecurityTrend(items) {
+
+            dashboardTrendData = Array.isArray(items)
+                ? items.slice()
+                : [];
+
+            const stats = document.getElementById("securityTrendStats");
+            const chart = document.getElementById("securityTrendChart");
+
+            if (!stats || !chart) {
+                return;
+            }
+
+            const completed = (items || [])
+                .filter(item => item && item.riskScore !== null)
+                .sort((a, b) => {
+                    const da = new Date(a.date || 0).getTime();
+                    const db = new Date(b.date || 0).getTime();
+                    return da - db;
+                });
+
+            if (!completed.length) {
+                stats.innerHTML = `
+                    <div class="trend-stat"><div class="trend-stat-label">Latest Risk Score</div><div class="trend-stat-value">-</div><div class="trend-stat-sub">No completed score available</div></div>
+                    <div class="trend-stat"><div class="trend-stat-label">Score Change</div><div class="trend-stat-value">-</div><div class="trend-stat-sub">Not enough data</div></div>
+                    <div class="trend-stat"><div class="trend-stat-label">Latest Findings</div><div class="trend-stat-value">-</div><div class="trend-stat-sub">No completed scan available</div></div>
+                `;
+                chart.innerHTML = `<div class="trend-empty">No completed scans with a risk score are available yet.</div>`;
+                renderPremiumAnalytics();
+                return;
+            }
+
+            const latest = completed[completed.length - 1];
+            const previous = completed.length > 1 ? completed[completed.length - 2] : null;
+            const change = previous ? Number(latest.riskScore) - Number(previous.riskScore) : null;
+            const changeText = change === null ? "First completed scan" : `${change > 0 ? "+" : ""}${change} points`;
+
+            stats.innerHTML = `
+                <div class="trend-stat">
+                    <div class="trend-stat-label">Latest Risk Score</div>
+                    <div class="trend-stat-value">${Math.round(latest.riskScore)}/100</div>
+                    <div class="trend-stat-sub">Scan #${escapeHtml(String(latest.scanId))}</div>
+                </div>
+                <div class="trend-stat">
+                    <div class="trend-stat-label">Score Change</div>
+                    <div class="trend-stat-value">${escapeHtml(changeText)}</div>
+                    <div class="trend-stat-sub">Compared with previous completed scan</div>
+                </div>
+                <div class="trend-stat">
+                    <div class="trend-stat-label">Latest Findings</div>
+                    <div class="trend-stat-value">${Number(latest.findings || 0)}</div>
+                    <div class="trend-stat-sub">Recorded in scan #${escapeHtml(String(latest.scanId))}</div>
+                </div>
+            `;
+
+            const visible = completed.slice(-10);
+            chart.innerHTML = visible.map(item => {
+                const score = Math.max(0, Math.min(100, Number(item.riskScore) || 0));
+                const height = Math.max(4, Math.round(score * 1.25));
+                const date = item.date ? new Date(item.date) : null;
+                const label = date && !isNaN(date.getTime()) ? date.toLocaleDateString() : `#${item.scanId}`;
+
+                return `
+                    <div class="trend-column" title="Scan #${escapeHtml(String(item.scanId))} • ${Math.round(score)}/100 • ${Number(item.findings || 0)} findings">
+                        <div class="trend-score">${Math.round(score)}</div>
+                        <div class="trend-bar" style="height:${height}px"></div>
+                        <div class="trend-date">#${escapeHtml(String(item.scanId))}</div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+
+        // ==========================================
+        // PREMIUM SECURITY ANALYTICS
+        // ==========================================
+
+        function renderPremiumAnalytics(summary = null) {
+
+            if (summary && typeof summary === "object") {
+                dashboardAnalyticsSummary = summary;
+            }
+
+            summary = dashboardAnalyticsSummary || {};
+
+            const critical = Number(summary.critical ?? 0);
+            const high = Number(summary.high ?? 0);
+            const medium = Number(summary.medium ?? 0);
+            const low = Number(summary.low ?? 0);
+            const info = Number(summary.info ?? 0);
+            const total = Number(
+                summary.total ??
+                (critical + high + medium + low + info)
+            );
+
+            const openFindings = critical + high + medium + low;
+            const passRate = total > 0
+                ? Math.round((info / total) * 100)
+                : 0;
+
+            let riskScore = 100;
+            riskScore -= critical * 25;
+            riskScore -= high * 15;
+            riskScore -= medium * 8;
+            riskScore -= low * 3;
+            riskScore = Math.max(0, Math.min(100, riskScore));
+
+            let riskLevel = "EXCELLENT";
+            if (riskScore >= 90) riskLevel = "EXCELLENT";
+            else if (riskScore >= 75) riskLevel = "GOOD";
+            else if (riskScore >= 50) riskLevel = "MEDIUM";
+            else if (riskScore >= 25) riskLevel = "HIGH RISK";
+            else riskLevel = "CRITICAL RISK";
+
+            const totalEl = document.getElementById("analyticsTotalChecks");
+            const openEl = document.getElementById("analyticsOpenFindings");
+            const passEl = document.getElementById("analyticsPassRate");
+            const scoreEl = document.getElementById("analyticsRiskScore");
+            const levelEl = document.getElementById("analyticsRiskLevel");
+            const updatedEl = document.getElementById("analyticsLastUpdated");
+
+            if (totalEl) totalEl.innerText = total;
+            if (openEl) openEl.innerText = openFindings;
+            if (passEl) passEl.innerText = passRate + "%";
+            if (scoreEl) scoreEl.innerText = riskScore + "/100";
+            if (levelEl) levelEl.innerText = riskLevel;
+
+            if (updatedEl) {
+                updatedEl.innerText = total > 0
+                    ? "Updated " + new Date().toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    })
+                    : "Waiting for scan data";
+            }
+
+            const donut = document.getElementById("analyticsSeverityDonut");
+            const donutTotal = document.getElementById("analyticsSeverityTotal");
+            const legend = document.getElementById("analyticsSeverityLegend");
+
+            if (donutTotal) donutTotal.innerText = total;
+
+            const severityItems = [
+                { name: "Passed / Info", value: info, color: "#22c55e" },
+                { name: "Low", value: low, color: "#3b82f6" },
+                { name: "Medium", value: medium, color: "#eab308" },
+                { name: "High", value: high, color: "#f97316" },
+                { name: "Critical", value: critical, color: "#ef4444" }
+            ];
+
+            if (donut) {
+                if (total > 0) {
+                    let cursor = 0;
+                    const stops = severityItems.map(item => {
+                        const start = cursor;
+                        cursor += (item.value / total) * 360;
+                        return `${item.color} ${start}deg ${cursor}deg`;
+                    });
+                    donut.style.background =
+                        `conic-gradient(${stops.join(",")})`;
+                } else {
+                    donut.style.background =
+                        "conic-gradient(#1e293b 0deg 360deg)";
+                }
+            }
+
+            if (legend) {
+                legend.innerHTML = severityItems.map(item => `
+                    <div class="analytics-legend-row">
+                        <div class="analytics-legend-name">
+                            <span class="analytics-dot"
+                                  style="background:${item.color}"></span>
+                            <span>${escapeHtml(item.name)}</span>
+                        </div>
+                        <span class="analytics-legend-value">${item.value}</span>
+                    </div>
+                `).join("");
+            }
+
+            const owaspGrid =
+                document.getElementById("analyticsOwaspGrid");
+            const owaspSummary =
+                summary.owaspSummary || {};
+
+            if (owaspGrid) {
+                const entries = Object.entries(owaspSummary);
+
+                if (!entries.length) {
+                    owaspGrid.innerHTML = `
+                        <div class="analytics-trend-empty">
+                            Run a security scan to view OWASP coverage.
+                        </div>
+                    `;
+                } else {
+                    owaspGrid.innerHTML = entries.map(([name, data]) => {
+                        const categoryTotal = Number(data?.total || 0);
+                        const passed = Number(data?.passed || 0);
+                        const open = Number(data?.open || 0);
+                        const percentage = categoryTotal > 0
+                            ? Math.round((passed / categoryTotal) * 100)
+                            : 0;
+
+                        return `
+                            <div class="analytics-owasp-item">
+                                <div class="analytics-owasp-name">
+                                    ${escapeHtml(name)}
+                                </div>
+                                <div class="analytics-owasp-meta">
+                                    <span>${passed} passed</span>
+                                    <span>${open} open</span>
+                                </div>
+                                <div class="analytics-owasp-track">
+                                    <div class="analytics-owasp-bar"
+                                         style="width:${percentage}%"></div>
+                                </div>
+                            </div>
+                        `;
+                    }).join("");
+                }
+            }
+
+        }
+
+
+        // ==========================================
+        // VIEW SCAN + DETAILS MODAL
+        // ==========================================
+
+        async function viewScan(scanId) {
+
+            if (!scanId) {
+                return;
+            }
+
+            currentScanId =
+                String(scanId);
+
+
+            localStorage.setItem(
+                "latestScanId",
+                currentScanId
+            );
+
+
+            updateScanInfo();
+
+
+            const modal =
+                document.getElementById(
+                    "scanDetailsModal"
+                );
+
+
+            const body =
+                document.getElementById(
+                    "scanDetailsBody"
+                );
+
+
+            const modalInfo =
+                document.getElementById(
+                    "modalScanInfo"
+                );
+
+
+            modalInfo.innerText =
+                `Scan #${currentScanId}`;
+
+
+            body.innerHTML = `
+                <div class="scan-loading">
+                    Loading scan details...
+                </div>
+            `;
+
+
+            modal.classList.add("show");
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/scan-results/${currentScanId}`,
+                        {
+                            method: "GET",
+
+                            headers: {
+                                "Authorization":
+                                    `Bearer ${token}`
+                            }
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        data.error ||
+                        "Unable to load scan details."
+                    );
+
+                }
+
+
+                const results =
+                    data.data || [];
+
+
+                renderScanDetails(
+                    currentScanId,
+                    results
+                );
+
+
+                await loadFindings();
+
+            }
+
+
+            catch (error) {
+
+                console.error(
+                    "Scan details error:",
+                    error
+                );
+
+
+                body.innerHTML = `
+                    <div class="scan-detail-error">
+
+                        ❌ ${escapeHtml(
+                            error.message ||
+                            "Unable to load scan details."
+                        )}
+
+                    </div>
+                `;
+
+            }
+
+        }
+
+
+        // ==========================================
+        // RENDER SCAN DETAILS
+        // ==========================================
+
+        function renderScanDetails(
+            scanId,
+            results
+        ) {
+
+            const body =
+                document.getElementById(
+                    "scanDetailsBody"
+                );
+
+
+            if (!Array.isArray(results)) {
+                results = [];
+            }
+
+
+            let critical = 0;
+            let high = 0;
+            let medium = 0;
+            let low = 0;
+            let info = 0;
+
+
+            results.forEach(result => {
+
+                const severity =
+                    String(
+                        result.severity || "info"
+                    ).toLowerCase();
+
+
+                if (severity === "critical") {
+                    critical++;
+                }
+
+                else if (severity === "high") {
+                    high++;
+                }
+
+                else if (severity === "medium") {
+                    medium++;
+                }
+
+                else if (severity === "low") {
+                    low++;
+                }
+
+                else {
+                    info++;
+                }
+
+            });
+
+
+            const actualFindings =
+                critical +
+                high +
+                medium +
+                low;
+
+
+            let cardsHtml = "";
+
+
+            if (results.length === 0) {
+
+                cardsHtml = `
+                    <div class="scan-no-results">
+
+                        ✅ No security findings found for this scan.
+
+                    </div>
+                `;
+
+            }
+
+
+            else {
+
+                cardsHtml =
+                    results.map(result => {
+
+                        const severity =
+                            String(
+                                result.severity || "info"
+                            ).toLowerCase();
+
+
+                        let badgeClass =
+                            "badge-info";
+
+
+                        if (severity === "critical") {
+
+                            badgeClass =
+                                "badge-critical";
+
+                        }
+
+                        else if (severity === "high") {
+
+                            badgeClass =
+                                "badge-high";
+
+                        }
+
+                        else if (severity === "medium") {
+
+                            badgeClass =
+                                "badge-medium";
+
+                        }
+
+                        else if (severity === "low") {
+
+                            badgeClass =
+                                "badge-low";
+
+                        }
+
+
+                        const status =
+                            severity === "info"
+                                ? "PASSED"
+                                : "OPEN";
+
+
+                        const statusClass =
+                            severity === "info"
+                                ? "status-passed"
+                                : "status-open";
+
+
+                        const title =
+                            result.title ||
+                            "Untitled Finding";
+
+
+                        const checkType =
+                            result.check_type ||
+                            "-";
+
+
+                        const owaspCategory =
+                            result.owasp_category ||
+                            "General Security Posture";
+
+
+                        const affectedUrl =
+                            result.affected_url ||
+                            "-";
+
+
+                        const description =
+                            result.description ||
+                            "No description available.";
+
+
+                        const evidence =
+                            result.evidence ||
+                            "No evidence available.";
+
+
+                        const remediation =
+                            result.remediation ||
+                            "No remediation guidance available.";
+
+                        const titleLower = title.toLowerCase();
+                        const evidenceLower = evidence.toLowerCase();
+                        const isNotObserved =
+                            titleLower.includes("missing") ||
+                            titleLower.includes("not observed") ||
+                            evidenceLower.includes("not present") ||
+                            evidenceLower.includes("not observed");
+
+                        const verificationStatus =
+                            severity === "info"
+                                ? "Verified — security control was observed in the inspected response."
+                                : isNotObserved
+                                    ? "Verified — the expected security control was not observed in the inspected response."
+                                    : "Verified — finding was generated from the inspected response and passive checks.";
+
+
+                        return `
+
+                            <div class="scan-detail-card">
+
+                                <div class="scan-detail-top">
+
+                                    <div>
+
+                                        <div class="scan-detail-title">
+
+                                            ${escapeHtml(
+                                                title
+                                            )}
+
+                                        </div>
+
+                                        <div class="scan-detail-type">
+
+                                            Check Type:
+                                            ${escapeHtml(
+                                                checkType
+                                            )}
+
+                                        </div>
+
+                                        <div class="scan-detail-type" style="margin-top:4px;">
+
+                                            OWASP Category:
+                                            ${escapeHtml(
+                                                owaspCategory
+                                            )}
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span
+                                            class="badge ${badgeClass}">
+
+                                            ${escapeHtml(
+                                                severity.toUpperCase()
+                                            )}
+
+                                        </span>
+
+
+                                        <span
+                                            class="status-badge ${statusClass}">
+
+                                            ${status}
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="scan-detail-grid">
+
+                                    <div class="scan-detail-full">
+                                        <span class="scan-detail-label">Affected URL</span>
+                                        <div class="scan-detail-value scan-detail-url">
+                                            ${escapeHtml(affectedUrl)}
+                                        </div>
+                                    </div>
+
+                                    <div class="scan-detail-full">
+                                        <span class="scan-detail-label">Description</span>
+                                        <div class="scan-detail-value">
+                                            ${escapeHtml(description)}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <span class="scan-detail-label">Evidence & Verification</span>
+                                        <div class="scan-detail-value scan-evidence">
+                                            <span class="scan-evidence-label">Observed Evidence</span>
+                                            <div>${escapeHtml(evidence)}</div>
+                                        </div>
+                                        <div class="scan-verification">
+                                            <strong>Verification:</strong>
+                                            ${escapeHtml(verificationStatus)}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <span class="scan-detail-label">Remediation</span>
+                                        <div class="scan-detail-value scan-remediation">
+                                            ${escapeHtml(remediation)}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <span class="scan-detail-label">Security Recommendation</span>
+                                        <div class="scan-detail-value scan-recommendation">
+                                            ${
+                                                severity === "info"
+                                                    ? "This check passed. Continue monitoring this security control during future scans."
+                                                    : escapeHtml(remediation)
+                                            }
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    }).join("");
+
+            }
+
+
+            body.innerHTML = `
+
+                <div class="scan-modal-summary">
+
+                    <div class="scan-modal-summary-item">
+
+                        <strong>
+                            ${Math.max(
+                                0,
+                                Math.min(
+                                    100,
+                                    100 -
+                                    (critical * 25) -
+                                    (high * 15) -
+                                    (medium * 8) -
+                                    (low * 3)
+                                )
+                            )}
+                        </strong>
+
+                        <span>
+                            Risk Score
+                        </span>
+
+                    </div>
+
+                    <div class="scan-modal-summary-item">
+
+                        <strong>
+                            ${results.length}
+                        </strong>
+
+                        <span>
+                            Checks
+                        </span>
+
+                    </div>
+
+                    <div class="scan-modal-summary-item">
+
+                        <strong>
+                            ${actualFindings}
+                        </strong>
+
+                        <span>
+                            Findings
+                        </span>
+
+                    </div>
+
+
+                    <div class="scan-modal-summary-item">
+
+                        <strong class="critical">
+                            ${critical}
+                        </strong>
+
+                        <span>
+                            Critical
+                        </span>
+
+                    </div>
+
+
+                    <div class="scan-modal-summary-item">
+
+                        <strong class="high">
+                            ${high}
+                        </strong>
+
+                        <span>
+                            High
+                        </span>
+
+                    </div>
+
+
+                    <div class="scan-modal-summary-item">
+
+                        <strong class="medium">
+                            ${medium}
+                        </strong>
+
+                        <span>
+                            Medium
+                        </span>
+
+                    </div>
+
+
+                    <div class="scan-modal-summary-item">
+
+                        <strong>
+                            ${low}
+                        </strong>
+
+                        <span>
+                            Low
+                        </span>
+
+                    </div>
+
+
+                    <div class="scan-modal-summary-item">
+
+                        <strong>
+                            ${info}
+                        </strong>
+
+                        <span>
+                            Passed / Info
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                ${cardsHtml}
+
+            `;
+
+        }
+
+
+        // ==========================================
+        // VIEW SINGLE FINDING FROM TABLE
+        // ==========================================
+
+        async function viewFindingDetails(index) {
+
+            if (!currentScanId) {
+                alert("Please run a security scan first.");
+                return;
+            }
+
+            const selectedIndex = Number(index);
+
+            if (!Number.isInteger(selectedIndex) || selectedIndex < 0) {
+                return;
+            }
+
+            try {
+                await viewScan(currentScanId);
+
+                const cards =
+                    document.querySelectorAll(
+                        "#scanDetailsBody .scan-detail-card"
+                    );
+
+                cards.forEach(card => {
+                    card.classList.remove("highlighted");
+                });
+
+                const selectedCard = cards[selectedIndex];
+
+                if (selectedCard) {
+                    selectedCard.classList.add("highlighted");
+                    selectedCard.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
+                }
+            }
+            catch (error) {
+                console.error("Finding details error:", error);
+            }
+        }
+
+
+        // ==========================================
+        // CLOSE SCAN DETAILS MODAL
+        // ==========================================
+
+        function closeScanDetails() {
+
+            const modal =
+                document.getElementById(
+                    "scanDetailsModal"
+                );
+
+
+            modal.classList.remove(
+                "show"
+            );
+
+        }
+
+
+        // Close modal when clicking outside
+        document.addEventListener(
+            "click",
+            function(event) {
+
+                const modal =
+                    document.getElementById(
+                        "scanDetailsModal"
+                    );
+
+
+                if (
+                    event.target === modal
+                ) {
+
+                    closeScanDetails();
+
+                }
+
+            }
+        );
+
+
+        // Close modal with Escape
+        document.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (event.key === "Escape") {
+
+                    closeScanDetails();
+
+                }
+
+            }
+        );
+
+
+        // ==========================================
+        // PDF REPORT
+        // ==========================================
+
+        async function downloadReport() {
+
+            if (!currentScanId) {
+
+                alert(
+                    "Please run a security scan first."
+                );
+
+                return;
+
+            }
+
+
+            const button =
+                document.getElementById(
+                    "downloadButton"
+                );
+
+
+            button.disabled =
+                true;
+
+
+            button.innerText =
+                "Generating PDF...";
+
+
+            try {
+
+                // ==================================
+                // GENERATE PDF
+                // ==================================
+
+                const createResponse =
+                    await fetch(
+                        `/reports/${currentScanId}/pdf`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Authorization":
+                                    `Bearer ${token}`
+                            }
+                        }
+                    );
+
+
+                const createData =
+                    await createResponse.json();
+
+
+                if (!createResponse.ok) {
+
+                    alert(
+                        createData.message ||
+                        createData.error ||
+                        "Unable to generate PDF report."
+                    );
+
+                    return;
+
+                }
+
+
+                // ==================================
+                // DOWNLOAD PDF
+                // ==================================
+
+                button.innerText =
+                    "Downloading...";
+
+
+                const downloadResponse =
+                    await fetch(
+                        `/reports/${currentScanId}/pdf/download`,
+                        {
+                            method: "GET",
+
+                            headers: {
+                                "Authorization":
+                                    `Bearer ${token}`
+                            }
+                        }
+                    );
+
+
+                if (!downloadResponse.ok) {
+
+                    alert(
+                        "PDF download failed."
+                    );
+
+                    return;
+
+                }
+
+
+                const blob =
+                    await downloadResponse.blob();
+
+
+                const url =
+                    window.URL.createObjectURL(
+                        blob
+                    );
+
+
+                const a =
+                    document.createElement(
+                        "a"
+                    );
+
+
+                a.href =
+                    url;
+
+
+                a.download =
+                    `WebShield_Report_${currentScanId}.pdf`;
+
+
+                document.body.appendChild(
+                    a
+                );
+
+
+                a.click();
+
+
+                a.remove();
+
+
+                window.URL.revokeObjectURL(
+                    url
+                );
+
+            }
+
+
+            catch (error) {
+
+                console.error(
+                    "PDF error:",
+                    error
+                );
+
+
+                alert(
+                    "PDF download failed."
+                );
+
+            }
+
+
+            finally {
+
+                button.disabled =
+                    false;
+
+
+                button.innerText =
+                    "Download PDF Report";
+
+            }
+
+        }
+
+
+        // ==========================================
+        // HTML ESCAPE
+        // ==========================================
+
+        function escapeHtml(value) {
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.textContent =
+                value;
+
+
+            return div.innerHTML;
+
+        }
+
+
+        // ==========================================
+        // LOGOUT
+        // ==========================================
+
+        function logout() {
+
+            localStorage.removeItem(
+                "token"
+            );
+
+
+            localStorage.removeItem(
+                "latestScanId"
+            );
+
+
+            window.location.href =
+                "/login";
+
+        }
+
+
+        // ==========================================
+        // INITIAL LOAD
+        // ==========================================
+
+        updateScanInfo();
+
+        loadFindings();
+
+        loadScanHistory();
+
+    </script>
+
+</body>
+
+</html>
