@@ -1,0 +1,8 @@
+Flask
+python-dotenv
+supabase
+bcrypt
+PyJWT
+requests
+reportlab
+gunicorn
